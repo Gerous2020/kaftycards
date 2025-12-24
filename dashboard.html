@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - KaftyCards</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="css/variables.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem 0.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            flex: 1;
+            margin: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: 0.2s;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .logout-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-text h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .welcome-text p {
+            margin: 5px 0 0;
+            color: #64748b;
+        }
+
+        .view-card-btn {
+            background: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px #bfdbfe;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+            position: sticky;
+            bottom: 1rem;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .save-btn.saved {
+            background: #10b981;
+        }
+
+        /* Helpers */
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-small:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-add {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 10px;
+            border-style: dashed;
+        }
+
+        .btn-add:hover {
+            background: #dbeafe;
+        }
+
+        .btn-delete {
+            color: #ef4444;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+        .btn-delete:hover {
+            background: #fee2e2;
+        }
+
+        /* Dynamic Items */
+        .dynamic-item {
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .remove-pos {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        /* Image Upload */
+        .image-upload-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .preview-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #cbd5e1;
+            background: #eee;
+        }
+
+        input[type="file"] {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        input[type="file"]::file-selector-button {
+            margin-right: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #334155;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        /* Gallery Grid */
+        .gallery-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .gallery-thumb {
+            position: relative;
+            aspect-ratio: 1;
+        }
+
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .gallery-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Theme Grid */
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .theme-option {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        .theme-option.active {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 600;
+            transform: scale(1.05);
+        }
+
+        .theme-option:hover {
+            border-color: #cbd5e1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">KaftyCards</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+            <li><a href="#branding"><i data-lucide="palette"></i> Branding</a></li>
+            <li><a href="#content"><i data-lucide="file-text"></i> Profile</a></li>
+            <li><a href="#services"><i data-lucide="layers"></i> Services</a></li>
+            <li><a href="#gallery"><i data-lucide="image"></i> Gallery</a></li>
+        </ul>
+        <button onclick="logout()" class="logout-btn"><i data-lucide="log-out"></i> Logout</button>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <div class="welcome-text">
+                <h1 id="welcomeUser">Welcome back!</h1>
+                <p>Manage your digital business card</p>
+            </div>
+            <a href="card.html" target="_blank" class="view-card-btn"><i data-lucide="external-link"></i> View Live
+                Card</a>
+        </div>
+
+        <form id="cardForm" onsubmit="saveData(event)">
+
+            <!-- Pro Analytics -->
+            <div class="section-card pro-section">
+                <h3 class="section-title">📊 Analytics (Pro)</h3>
+                <div style="display: flex; gap: 2rem;">
+                    <div>
+                        <h2 id="statViews">0</h2><small>Views</small>
+                    </div>
+                    <div>
+                        <h2 id="statClicks">0</h2><small>Clicks</small>
+                    </div>
+                    <div>
+                        <h2 id="statSaves">0</h2><small>Saves</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Branding -->
+            <div class="section-card" id="branding">
+                <h3 class="section-title">🎨 Theme & Branding</h3>
+
+                <div class="form-group">
+                    <label>Select Theme</label>
+                    <div class="theme-grid">
+                        <div class="theme-option" onclick="changeTheme('vip')" data-theme="vip">VIP (Gold)</div>
+                        <div class="theme-option" onclick="changeTheme('midnight')" data-theme="midnight">Midnight</div>
+                        <div class="theme-option" onclick="changeTheme('ocean')" data-theme="ocean">Ocean</div>
+                        <div class="theme-option" onclick="changeTheme('sunset')" data-theme="sunset">Sunset</div>
+                        <div class="theme-option" onclick="changeTheme('forest')" data-theme="forest">Forest</div>
+                        <div class="theme-option" onclick="changeTheme('executive')" data-theme="executive">Executive
+                        </div>
+                        <div class="theme-option" onclick="changeTheme('creative')" data-theme="creative">Creative</div>
+                        <div class="theme-option" onclick="changeTheme('custom')" data-theme="custom">Custom</div>
+                    </div>
+                </div>
+
+                <div id="customColorInputs"
+                    style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Primary Color</label>
+                            <input type="color" id="customPrimary" style="height: 40px; cursor: pointer;">
+                        </div>
+                        <div class="form-group">
+                            <label>Accent Color</label>
+                            <input type="color" id="customAccent" style="height: 40px; cursor: pointer;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company/Brand Name</label>
+                        <input type="text" id="companyInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hero Image</label>
+                        <div class="image-upload-wrapper">
+                            <input type="hidden" id="heroImageInput"> <!-- Stores Base64 or URL -->
+                            <img src="" id="heroPreview" class="preview-img">
+                            <input type="file" onchange="handleImageUpload(this, 'heroImageInput', 'heroPreview')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="section-card" id="content">
+                <h3 class="section-title">👤 Profile Information</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        <input type="text" id="nameInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Job Title / Designation</label>
+                        <input type="text" id="designationInput" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Profile Picture</label>
+                    <div class="image-upload-wrapper">
+                        <input type="hidden" id="imageInput">
+                        <img src="" id="profilePreview" class="preview-img">
+                        <input type="file" onchange="handleImageUpload(this, 'imageInput', 'profilePreview')">
+                    </div>
+                </div>
+
+                <!-- Dynamic About Blocks replaced single textarea -->
+                <div class="form-group">
+                    <label style="display:flex; justify-content:space-between;">About / Content Blocks <button
+                            type="button" class="btn-small" onclick="addAboutBlock()">+ Add Block</button></label>
+                    <div id="aboutBlocksContainer">
+                        <!-- Dynamic Blocks go here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="section-card">
+                <h3 class="section-title">📞 Contact Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phoneInput">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="emailInput">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>WhatsApp Number</label>
+                        <input type="tel" id="whatsappInput">
+                    </div>
+                    <div class="form-group">
+                        <label>Website URL</label>
+                        <input type="url" id="websiteInput">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Office Address</label>
+                    <input type="text" id="addressInput">
+                </div>
+            </div>
+
+            <!-- Services Editor -->
+            <div class="section-card" id="services">
+                <h3 class="section-title">
+                    🛠️ Services
+                    <button type="button" class="btn-small" onclick="addServiceItem()">+ Add Service</button>
+                </h3>
+                <div id="servicesContainer">
+                    <!-- Dynamic Services -->
+                </div>
+            </div>
+
+            <!-- Gallery Editor -->
+            <div class="section-card" id="gallery">
+                <h3 class="section-title">
+                    🖼️ Gallery
+                    <label class="btn-small" style="cursor:pointer;">
+                        + Upload Image
+                        <input type="file" accept="image/*" multiple style="display:none"
+                            onchange="handleGalleryUpload(this)">
+                    </label>
+                </h3>
+                <div id="galleryGrid" class="gallery-preview-grid">
+                    <!-- Gallery Thumbs -->
+                </div>
+            </div>
+
+
+            <button type="submit" class="save-btn" id="saveButton">
+                <i data-lucide="save"></i> Save Changes
+            </button>
+        </form>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        lucide.createIcons();
+        requireAuth();
+
+        // --- GLOBAL STATE ---
+        let currentAboutBlocks = [];
+        let currentServices = [];
+        let currentGallery = [];
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('kafty_users') || '[]').find(u => u.email === localStorage.getItem('userEmail'));
+            if (user) document.getElementById('welcomeUser').textContent = `Welcome, ${user.name.split(' ')[0]}!`;
+
+            const data = loadData();
+            if (data) {
+                // Standard Fields
+                if (document.getElementById('companyInput')) document.getElementById('companyInput').value = data.company || '';
+                document.getElementById('nameInput').value = data.name || '';
+                document.getElementById('designationInput').value = data.designation || '';
+                document.getElementById('phoneInput').value = data.phone || '';
+                document.getElementById('emailInput').value = data.email || '';
+                document.getElementById('addressInput').value = data.address || '';
+                document.getElementById('websiteInput').value = data.website || '';
+                document.getElementById('whatsappInput').value = data.whatsapp || '';
+
+                // Image Fields (Handle URL init)
+                document.getElementById('imageInput').value = data.image || '';
+                document.getElementById('profilePreview').src = data.image || '';
+
+                document.getElementById('heroImageInput').value = data.heroImage || '';
+                document.getElementById('heroPreview').src = data.heroImage || '';
+
+                // Load Complex Data
+                currentAboutBlocks = data.aboutBlocks || [{ heading: 'About Us', content: data.about || '' }];
+                renderAboutBlocks();
+
+                currentServices = data.services || [];
+                // Migration: Handle legacy strings
+                if (currentServices.length > 0 && typeof currentServices[0] === 'string') {
+                    currentServices = currentServices.map(s => ({ title: s, desc: 'Professional service.', images: [] }));
+                }
+                renderServices();
+
+                currentGallery = data.gallery || [];
+                renderGallery();
+            }
+        });
+
+        // --- DYNAMIC ABOUT BLOCKS ---
+        function renderAboutBlocks() {
+            const container = document.getElementById('aboutBlocksContainer');
+            container.innerHTML = '';
+            currentAboutBlocks.forEach((block, index) => {
+                const div = document.createElement('div');
+                div.className = 'dynamic-item';
+                div.innerHTML = `
+                    <button type="button" class="btn-small btn-delete remove-pos" onclick="removeAboutBlock(${index})"><i data-lucide="trash-2"></i></button>
+                    <div class="form-group">
+                        <label>Heading</label>
+                        <input type="text" value="${block.heading || ''}" oninput="currentAboutBlocks[${index}].heading = this.value">
+                    </div>
+                    <div class="form-group">
+                        <label>Content</label>
+                        <textarea rows="3" oninput="currentAboutBlocks[${index}].content = this.value">${block.content || ''}</textarea>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function addAboutBlock() {
+            currentAboutBlocks.push({ heading: 'New Section', content: '' });
+            renderAboutBlocks();
+        }
+        function removeAboutBlock(index) {
+            currentAboutBlocks.splice(index, 1);
+            renderAboutBlocks();
+        }
+
+        // --- DYNAMIC SERVICES ---
+        function renderServices() {
+            const container = document.getElementById('servicesContainer');
+            container.innerHTML = '';
+            currentServices.forEach((service, index) => {
+                const div = document.createElement('div');
+                div.className = 'dynamic-item';
+                div.innerHTML = `
+                    <button type="button" class="btn-small btn-delete remove-pos" onclick="removeService(${index})"><i data-lucide="trash-2"></i></button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Service Title</label>
+                            <input type="text" value="${service.title || ''}" oninput="currentServices[${index}].title = this.value">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea rows="2" oninput="currentServices[${index}].desc = this.value">${service.desc || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Images</label>
+                        <div class="gallery-preview-grid" id="service-img-${index}">
+                             ${(service.images || []).map((img, imgIdx) => `
+                                <div class="gallery-thumb">
+                                    <img src="${img}">
+                                    <button type="button" class="gallery-remove" onclick="removeServiceImage(${index}, ${imgIdx})">×</button>
+                                </div>
+                             `).join('')}
+                             <label class="gallery-thumb" style="border: 2px dashed #cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                                <i data-lucide="plus"></i>
+                                <input type="file" accept="image/*" style="display:none" onchange="addServiceImage(this, ${index})">
+                             </label>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function addServiceItem() {
+            currentServices.push({ title: 'New Service', desc: '', images: [] });
+            renderServices();
+        }
+        function removeService(index) {
+            currentServices.splice(index, 1);
+            renderServices();
+        }
+        function addServiceImage(input, serviceIndex) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (!currentServices[serviceIndex].images) currentServices[serviceIndex].images = [];
+                    currentServices[serviceIndex].images.push(e.target.result);
+                    renderServices();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function removeServiceImage(serviceIndex, imgIndex) {
+            currentServices[serviceIndex].images.splice(imgIndex, 1);
+            renderServices();
+        }
+
+        // --- GALLERY MANAGER ---
+        function renderGallery() {
+            const container = document.getElementById('galleryGrid');
+            container.innerHTML = currentGallery.map((img, index) => `
+                <div class="gallery-thumb">
+                    <img src="${img}">
+                    <button type="button" class="gallery-remove" onclick="removeGalleryItem(${index})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function handleGalleryUpload(input) {
+            if (input.files) {
+                Array.from(input.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        currentGallery.push(e.target.result);
+                        renderGallery();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+        function removeGalleryItem(index) {
+            currentGallery.splice(index, 1);
+            renderGallery();
+        }
+
+        // --- HELPER: LOCAL FILE UPLOAD (Base64) ---
+        function handleImageUpload(input, targetInputId, previewId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64 = e.target.result;
+                    document.getElementById(targetInputId).value = base64;
+                    document.getElementById(previewId).src = base64;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- SAVE HANDLER ---
+        function saveData(e) {
+            e.preventDefault();
+            const btn = document.getElementById('saveButton');
+            btn.innerHTML = '<i data-lucide="loader-2" class="animate-spin"></i> Saving...';
+
+            const newData = {
+                ...loadData(),
+                company: document.getElementById('companyInput').value,
+                name: document.getElementById('nameInput').value,
+                designation: document.getElementById('designationInput').value,
+                phone: document.getElementById('phoneInput').value,
+                email: document.getElementById('emailInput').value,
+                address: document.getElementById('addressInput').value,
+                website: document.getElementById('websiteInput').value,
+                whatsapp: document.getElementById('whatsappInput').value,
+
+                image: document.getElementById('imageInput').value,
+                heroImage: document.getElementById('heroImageInput').value,
+
+                // Advanced Data
+                aboutBlocks: currentAboutBlocks,
+                services: currentServices,
+                gallery: currentGallery,
+                // Fallback field
+                about: currentAboutBlocks.length > 0 ? currentAboutBlocks[0].content : ''
+            };
+
+            saveUserData(newData);
+
+            // Simulate Network Delay
+            setTimeout(() => {
+                btn.classList.add('saved');
+                btn.innerHTML = '<i data-lucide="check"></i> Saved!';
+                setTimeout(() => {
+                    btn.classList.remove('saved');
+                    btn.innerHTML = '<i data-lucide="save"></i> Save Changes';
+                }, 2000);
+            }, 800);
+        }
+    </script>
+</body>
+
+</html>
