@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - KaftyCards</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rubik:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-50 font-sans antialiased">
+
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="bg-primary-blue w-64 flex-shrink-0 text-white flex flex-col justify-between hidden md:flex">
+            <div class="flex flex-col h-full">
+                <div class="h-16 flex items-center px-6 border-b border-blue-800 shrink-0">
+                    <i class="fa-solid fa-id-card text-accent-saffron text-2xl mr-3"></i>
+                    <span class="text-xl font-bold font-serif">KaftyCards</span>
+                </div>
+
+                <div class="flex-1 overflow-y-auto no-scrollbar">
+                    <nav class="p-4 space-y-1">
+                        <p class="px-4 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-2 mt-2">Overview
+                        </p>
+                        <a href="#" data-target="view-dashboard"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 rounded-lg transition">
+                            <i class="fa-solid fa-gauge-high w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#" data-target="view-enquiries"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-address-book w-5"></i>
+                            <span>Enquiries</span>
+                        </a>
+
+                        <p class="px-4 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-2 mt-6">Content
+                        </p>
+                        <a href="#" data-target="view-profile"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-user-tie w-5"></i>
+                            <span>Business Profile</span>
+                        </a>
+                        <a href="#" data-target="view-services"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-list-check w-5"></i>
+                            <span>Services</span>
+                        </a>
+                        <a href="#" data-target="view-portfolio"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-briefcase w-5"></i>
+                            <span>Portfolio</span>
+                        </a>
+                        <a href="#" data-target="view-gallery"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-images w-5"></i>
+                            <span>Gallery</span>
+                        </a>
+                        <a href="#" data-target="view-testimonials"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-star w-5"></i>
+                            <span>Testimonials</span>
+                        </a>
+                        <a href="#" data-target="view-faq"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-circle-question w-5"></i>
+                            <span>FAQ Manager</span>
+                        </a>
+                        <a href="#" data-target="view-custom"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-cube w-5"></i>
+                            <span>Custom Section</span>
+                        </a>
+
+                        <p class="px-4 text-xs font-semibold text-blue-300 uppercase tracking-wider mb-2 mt-6">
+                            Configuration</p>
+                        <a href="#" data-target="view-settings"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-sliders w-5"></i>
+                            <span>Card Settings</span>
+                        </a>
+                        <a href="#" data-target="view-account"
+                            class="dashboard-nav-link flex items-center space-x-3 px-4 py-3 text-blue-100 hover:bg-blue-800 hover:text-white rounded-lg transition">
+                            <i class="fa-solid fa-gear w-5"></i>
+                            <span>Account</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="p-4 border-t border-blue-800 shrink-0">
+                    <a href="index.html"
+                        class="flex items-center space-x-3 px-4 py-3 text-blue-200 hover:text-white transition">
+                        <i class="fa-solid fa-right-from-bracket w-5"></i>
+                        <span>Sign Out</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-gray-50">
+            <div class="p-6 md:p-10">
+
+                <!-- VIEW 1: DASHBOARD OVERVIEW -->
+                <div id="view-dashboard" class="dashboard-view hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10">
+                        <div>
+                            <h1 id="welcome-msg" class="text-2xl md:text-3xl font-bold text-gray-800 font-serif">
+                                Namaste, Business Owner</h1>
+                            <p class="text-gray-500 mt-1">Here is your business overview.</p>
+                        </div>
+                        <div class="mt-4 md:mt-0 flex gap-3">
+                            <button onclick="window.location.href='card.html'"
+                                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Card
+                            </button>
+                            <button
+                                class="bg-accent-saffron text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition shadow-sm font-bold flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp"></i> Share Card
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Total Views</p>
+                                <p class="text-3xl font-bold text-primary-blue mt-1">1,248</p>
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-primary-blue text-lg">
+                                <i class="fa-solid fa-eye"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">New Enquiries</p>
+                                <p class="text-3xl font-bold text-accent-green mt-1">15</p>
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-accent-green text-lg">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 font-medium">Card Shares</p>
+                                <p class="text-3xl font-bold text-accent-saffron mt-1">86</p>
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-accent-saffron text-lg">
+                                <i class="fa-solid fa-share-nodes"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 2: BUSINESS PROFILE -->
+                <div id="view-profile" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">Business Profile</h1>
+                        <button onclick="window.open('card.html', '_blank')"
+                            class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                            <i class="fa-solid fa-eye"></i> View Card
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+                        <form class="space-y-6">
+                            <div class="flex flex-col md:flex-row items-center gap-8 border-b pb-6">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-sm font-bold text-gray-600 mb-2">Profile Photo</span>
+                                    <div class="relative group">
+                                        <img id="profile-preview"
+                                            class="h-24 w-24 object-cover rounded-full border border-gray-200 bg-gray-50 mb-2"
+                                            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80">
+                                        <label
+                                            class="cursor-pointer text-xs text-primary-blue font-bold hover:underline">
+                                            Change Photo <input type="file" id="profile-upload" class="hidden">
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <span class="text-sm font-bold text-gray-600 mb-2">Business Logo (For
+                                        Favicon)</span>
+                                    <div class="relative group">
+                                        <img id="logo-preview"
+                                            class="h-24 w-24 object-contain rounded-lg border border-gray-200 bg-gray-50 mb-2 p-2"
+                                            src="https://via.placeholder.com/100?text=Logo">
+                                        <label
+                                            class="cursor-pointer text-xs text-primary-blue font-bold hover:underline">
+                                            Upload Logo <input type="file" id="logo-upload" class="hidden">
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-400 mt-1">Appears in browser tab</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Business
+                                        Name</label><input type="text" id="input-name"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue"
+                                        value="Sri Balaji Hardware"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Industry
+                                        Type</label><select id="input-industry"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue">
+                                        <option>Retail</option>
+                                        <option>Services</option>
+                                    </select></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Phone
+                                        Number</label><input type="tel" id="input-phone"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue"
+                                        value="+91 98765 43210" pattern="[0-9+ ]*"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp
+                                        Number</label><input type="tel" id="input-whatsapp"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue"
+                                        value="+91 98765 43210" pattern="[0-9+ ]*"></div>
+                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label><input
+                                    type="email" id="input-email"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                    value="contact@balajihardware.in"></div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">About Us / Business
+                                    Description</label><textarea id="input-desc" rows="4"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg">We are a leading supplier of high-quality hardware...</textarea>
+                            </div>
+                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Business
+                                    Address</label><textarea id="input-address" rows="3"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg">No. 45, Anna Salai...</textarea>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Google Map
+                                        Link</label><input type="url" id="input-map"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg"></div>
+                                <div><label class="block text-sm font-medium text-gray-700 mb-1">Working
+                                        Hours</label><input type="text" id="input-hours"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                        value="Mon-Sat, 9AM - 8PM"></div>
+                            </div>
+                            <div class="pt-4 flex justify-end gap-3"><button type="submit"
+                                    class="px-8 py-2 bg-primary-blue text-white rounded-lg hover:bg-blue-900 font-bold shadow-md">Save
+                                    Changes</button></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- VIEW 3: CARD SETTINGS -->
+                <div id="view-settings" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">Card Settings</h1>
+                        <button onclick="window.open('card.html', '_blank')"
+                            class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                            <i class="fa-solid fa-eye"></i> View Card
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-8">
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Layout & Theme</h3>
+                                <div class="mb-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Card Layout</label>
+                                    <div class="grid grid-cols-3 gap-4">
+                                        <label
+                                            class="border-2 border-primary-blue bg-blue-50 rounded-lg p-3 cursor-pointer text-center"><input
+                                                type="radio" name="layout" class="sr-only" checked>
+                                            <div class="h-10 bg-gray-200 mb-2 rounded w-full"></div><span
+                                                class="text-xs font-bold text-primary-blue">Standard</span>
+                                        </label>
+                                        <label
+                                            class="border border-gray-200 rounded-lg p-3 cursor-pointer text-center"><input
+                                                type="radio" name="layout" class="sr-only">
+                                            <div class="h-10 bg-gray-200 mb-2 rounded w-full"></div><span
+                                                class="text-xs text-gray-600">Modern</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Theme Colors</label>
+                                    <div class="grid grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="text-xs text-gray-500">Primary Color</label>
+                                            <div class="flex items-center gap-3">
+                                                <input type="color" id="primary-color-picker" value="#2C3E50"
+                                                    class="h-10 w-full p-1 border border-gray-300 rounded cursor-pointer">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs text-gray-500">Secondary Color</label>
+                                            <div class="flex items-center gap-3">
+                                                <input type="color" id="secondary-color-picker" value="#F39C12"
+                                                    class="h-10 w-full p-1 border border-gray-300 rounded cursor-pointer">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Preset Themes</label>
+                                    <div class="grid grid-cols-5 gap-2" id="theme-grid">
+                                        <!-- Themes rendered by JS -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Buttons Visibility</h3>
+                                <div class="space-y-4">
+                                    <div class="flex justify-between"><span class="text-gray-700">Call
+                                            Button</span><input type="checkbox" checked></div>
+                                    <div class="flex justify-between"><span class="text-gray-700">WhatsApp
+                                            Button</span><input type="checkbox" checked></div>
+                                    <div class="flex justify-between"><span class="text-gray-700">Email
+                                            Button</span><input type="checkbox"></div>
+                                    <div class="flex justify-between"><span class="text-gray-700">Location
+                                            Button</span><input type="checkbox" checked></div>
+                                </div>
+                            </div>
+                            <div class="flex justify-end pt-2"><button
+                                    class="px-8 py-3 bg-primary-blue text-white rounded-lg hover:bg-blue-900 font-bold shadow-md w-full md:w-auto">Update
+                                    Card</button></div>
+                        </div>
+                        <div class="lg:col-span-1">
+                            <div class="bg-primary-blue text-white rounded-xl p-6 shadow-lg sticky top-6">
+                                <h3 class="text-xl font-bold mb-4">Mobile Preview</h3>
+                                <div
+                                    class="bg-gray-800 rounded-3xl p-2 border-4 border-gray-700 aspect-[9/16] overflow-hidden relative shadow-2xl mx-auto">
+                                    <iframe src="card.html" class="w-full h-full rounded-2xl bg-white border-0"
+                                        style="transform: scale(0.9); transform-origin: top center; height: 110%;"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW 4: SERVICES -->
+                <div id="view-services" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">Services / Products</h1>
+                        <div class="flex gap-3">
+                            <button onclick="window.open('card.html', '_blank')"
+                                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Card
+                            </button>
+                            <button id="btn-add-service"
+                                class="bg-primary-blue text-white px-4 py-2 rounded-lg hover:bg-blue-900 font-bold flex items-center gap-2"><i
+                                    class="fa-solid fa-plus"></i> Add New</button>
+                        </div>
+                    </div>
+                    <div id="services-list" class="space-y-4">
+                        <!-- Services rendered by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end border-t pt-4">
+                        <button
+                            class="btn-save-section px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md flex items-center gap-2"><i
+                                class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 5: PORTFOLIO -->
+                <div id="view-portfolio" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">Portfolio</h1>
+                        <div class="flex gap-3">
+                            <button onclick="window.open('card.html', '_blank')"
+                                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Card
+                            </button>
+                            <button id="btn-add-portfolio"
+                                class="bg-primary-blue text-white px-4 py-2 rounded-lg hover:bg-blue-900 font-bold flex items-center gap-2"><i
+                                    class="fa-solid fa-plus"></i> Add Work</button>
+                        </div>
+                    </div>
+                    <div id="portfolio-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Portfolio rendered by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end border-t pt-4">
+                        <button
+                            class="btn-save-section px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md flex items-center gap-2"><i
+                                class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 6: GALLERY (Newly Implemented) -->
+                <div id="view-gallery" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">Image Gallery</h1>
+                        <div class="flex gap-3">
+                            <label class="flex items-center gap-2 text-sm text-gray-600 mr-4"><input type="checkbox"
+                                    checked class="accent-primary-blue"> Show Gallery on Card</label>
+                            <button onclick="window.open('card.html', '_blank')"
+                                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Card
+                            </button>
+                            <button id="btn-add-gallery"
+                                class="bg-primary-blue text-white px-4 py-2 rounded-lg hover:bg-blue-900 font-bold flex items-center gap-2"><i
+                                    class="fa-solid fa-cloud-arrow-up"></i> Upload Images</button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border-2 border-dashed border-gray-300 text-center mb-6 hover:bg-gray-50 transition cursor-pointer"
+                        onclick="document.getElementById('btn-add-gallery').click()">
+                        <i class="fa-solid fa-images text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500">Drag & Drop images here or click to browse</p>
+                    </div>
+                    <div id="gallery-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- Gallery rendered by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end border-t pt-4">
+                        <button
+                            class="btn-save-section px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md flex items-center gap-2"><i
+                                class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 7: TESTIMONIALS (Newly Implemented) -->
+                <div id="view-testimonials" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">Testimonials</h1>
+                        <div class="flex gap-3">
+                            <button onclick="window.open('card.html', '_blank')"
+                                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Card
+                            </button>
+                            <button id="btn-add-testimonial"
+                                class="bg-primary-blue text-white px-4 py-2 rounded-lg hover:bg-blue-900 font-bold flex items-center gap-2"><i
+                                    class="fa-solid fa-plus"></i> Add Testimonial</button>
+                        </div>
+                    </div>
+                    <div id="testimonials-list" class="space-y-4">
+                        <!-- Testimonials rendered by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end border-t pt-4">
+                        <button
+                            class="btn-save-section px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md flex items-center gap-2"><i
+                                class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+                </div>
+
+                <!-- VIEW 8: ENQUIRIES -->
+                <div id="view-enquiries" class="dashboard-view hidden">
+                    <h1 class="text-2xl font-bold text-gray-800 font-serif mb-6">Enquiries</h1>
+                    <div id="enquiries-list" class="space-y-4">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- VIEW 11: FAQ MANAGER -->
+                <div id="view-faq" class="dashboard-view hidden">
+                    <div class="flex justify-between items-center mb-6">
+                        <h1 class="text-2xl font-bold text-gray-800 font-serif">FAQ Manager</h1>
+                        <div class="flex gap-3">
+                            <button onclick="window.open('card.html', '_blank')"
+                                class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                                <i class="fa-solid fa-eye"></i> View Card
+                            </button>
+                            <button id="btn-add-faq"
+                                class="bg-primary-blue text-white px-4 py-2 rounded-lg hover:bg-blue-900 font-bold flex items-center gap-2"><i
+                                    class="fa-solid fa-plus"></i> Add Question</button>
+                        </div>
+                    </div>
+                    <div id="faq-list" class="space-y-4">
+                        <!-- FAQ rendered by JS -->
+                    </div>
+                    <div class="mt-8 flex justify-end border-t pt-4">
+                        <button
+                            class="btn-save-section px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md flex items-center gap-2"><i
+                                class="fa-solid fa-check"></i> Save Changes</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 9: CUSTOM SECTIONS (Newly Implemented) -->
+            <div id="view-custom" class="dashboard-view hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800 font-serif">Custom Sections</h1>
+                    <div class="flex gap-3">
+                        <button onclick="window.open('card.html', '_blank')"
+                            class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium flex items-center gap-2">
+                            <i class="fa-solid fa-eye"></i> View Card
+                        </button>
+                        <button id="btn-add-custom"
+                            class="bg-primary-blue text-white px-4 py-2 rounded-lg hover:bg-blue-900 font-bold flex items-center gap-2"><i
+                                class="fa-solid fa-plus"></i> Add Section</button>
+                    </div>
+                </div>
+                <div id="custom-sections-list" class="space-y-4">
+                    <!-- Custom sections rendered by JS -->
+                </div>
+                <div class="mt-8 flex justify-end border-t pt-4">
+                    <button
+                        class="btn-save-section px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-bold shadow-md flex items-center gap-2"><i
+                            class="fa-solid fa-check"></i> Save Changes</button>
+                </div>
+            </div>
+
+            <!-- VIEW 10: ACCOUNT SETTINGS (Newly Implemented) -->
+            <div id="view-account" class="dashboard-view hidden">
+                <h1 class="text-2xl font-bold text-gray-800 font-serif mb-6">Account Settings</h1>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl">
+                    <h3 class="font-bold text-lg mb-4">Change Password</h3>
+                    <div class="space-y-4 mb-8">
+                        <input type="password" placeholder="Current Password"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        <input type="password" placeholder="New Password"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        <button class="bg-gray-800 text-white px-6 py-2 rounded-lg font-medium">Update
+                            Password</button>
+                    </div>
+
+                    <h3 class="font-bold text-lg mb-4 text-red-600">Danger Zone</h3>
+                    <div class="border border-red-100 bg-red-50 p-4 rounded-lg flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-red-800">Delete Digital Card</p>
+                            <p class="text-xs text-red-600">This will permanently delete your card and all data.</p>
+                        </div>
+                        <button
+                            class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-700">Delete</button>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+    </main>
+    </div>
+
+    <!-- Generic Modal -->
+    <div id="modal-backdrop"
+        class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-40 flex justify-center items-center">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 overflow-hidden">
+            <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+                <h3 id="modal-title" class="font-bold text-gray-800 text-lg">Add Item</h3>
+                <button id="modal-close" class="text-gray-500 hover:text-gray-700"><i
+                        class="fa-solid fa-times"></i></button>
+            </div>
+            <div id="modal-content" class="p-6">
+                <!-- Dynamic Form Injection -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"
+        class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition duration-300 z-50 flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-green-400"></i>
+        <span id="toast-message">Action successful!</span>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

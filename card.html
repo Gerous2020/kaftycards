@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Balaji Hardware - Digital Card</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rubik:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans antialiased min-h-screen flex justify-center items-start pt-0 md:pt-10 pb-10">
+
+    <!-- Card Container -->
+    <div class="w-full max-w-md bg-white md:rounded-3xl shadow-2xl overflow-hidden min-h-screen md:min-h-0">
+
+        <!-- Header / Cover -->
+        <div class="relative h-48 bg-primary-blue">
+            <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+            </div>
+            <!-- Curve SVG -->
+            <div class="absolute bottom-0 left-0 right-0">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="text-white fill-current">
+                    <path fill-opacity="1"
+                        d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                    </path>
+                </svg>
+            </div>
+            <!-- Share Button -->
+            <button
+                class="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition">
+                <i class="fa-solid fa-share-nodes text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="px-6 -mt-24 text-center relative z-10">
+            <div class="inline-block p-1 bg-white rounded-full profile-shadow">
+                <div
+                    class="w-32 h-32 rounded-full bg-white flex items-center justify-center overflow-hidden border-4 border-white">
+                    <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80"
+                        alt="Logo" class="object-cover w-full h-full">
+                </div>
+            </div>
+
+            <h1 class="text-2xl font-bold text-primary-blue mt-4 font-serif">Sri Balaji Hardware</h1>
+            <p class="text-gray-500 font-medium">Ramesh Kumar</p>
+            <p class="text-sm text-accent-saffron font-bold uppercase tracking-wide mt-1">Owner</p>
+
+            <div class="mt-2 flex justify-center gap-1 text-yellow-400 text-sm">
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star"></i>
+                <i class="fa-solid fa-star-half-stroke"></i>
+                <span class="text-gray-400 text-xs ml-1">(124 Reviews)</span>
+            </div>
+        </div>
+
+        <!-- Action Buttons (Sticky Grid) -->
+        <div class="grid grid-cols-4 gap-4 px-6 py-8">
+            <a href="tel:+919876543210" class="flex flex-col items-center gap-2 group">
+                <div
+                    class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition shadow-sm">
+                    <i class="fa-solid fa-phone text-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-gray-600">Call</span>
+            </a>
+            <a href="https://wa.me/919876543210" class="flex flex-col items-center gap-2 group">
+                <div
+                    class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 group-hover:bg-green-600 group-hover:text-white transition shadow-sm">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </div>
+                <span class="text-xs font-medium text-gray-600">WhatsApp</span>
+            </a>
+            <a href="#" class="flex flex-col items-center gap-2 group">
+                <div
+                    class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition shadow-sm">
+                    <i class="fa-solid fa-location-dot text-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-gray-600">Map</span>
+            </a>
+            <a href="mailto:contact@balajihardware.in" class="flex flex-col items-center gap-2 group">
+                <div
+                    class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-accent-saffron group-hover:bg-accent-saffron group-hover:text-white transition shadow-sm">
+                    <i class="fa-solid fa-envelope text-xl"></i>
+                </div>
+                <span class="text-xs font-medium text-gray-600">Email</span>
+            </a>
+        </div>
+
+        <div class="px-6 mb-6">
+            <button
+                class="w-full bg-primary-blue text-white py-3 rounded-full font-bold shadow-lg hover:bg-blue-900 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-user-plus"></i> Save to Contacts
+            </button>
+        </div>
+
+        <!-- About Section -->
+        <div class="bg-gray-50 px-6 py-6 border-t border-gray-100" id="card-about-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-3 border-l-4 border-accent-saffron pl-3">About Us</h2>
+            <p class="text-gray-600 text-sm leading-relaxed" id="card-desc">
+                Loading business description...
+            </p>
+        </div>
+
+        <!-- Services Section -->
+        <div class="px-6 py-6" id="card-services-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-primary-blue pl-3">Our Services</h2>
+            <div class="grid grid-cols-2 gap-3" id="card-services-list">
+                <!-- JS Rendered -->
+            </div>
+        </div>
+
+        <!-- Portfolio Section -->
+        <div class="bg-gray-50 px-6 py-6 border-t border-gray-100 hidden" id="card-portfolio-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-accent-saffron pl-3">Our Work</h2>
+            <div class="space-y-4" id="card-portfolio-list">
+                <!-- JS Rendered -->
+            </div>
+        </div>
+
+        <!-- Custom Sections -->
+        <div id="card-custom-sections" class="px-6 py-6 space-y-6">
+            <!-- Rendered by JS -->
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="px-6 py-6 hidden" id="card-gallery-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-primary-blue pl-3">Gallery</h2>
+            <div class="grid grid-cols-3 gap-2" id="card-gallery-list">
+                <!-- JS Rendered -->
+            </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div class="bg-gray-50 px-6 py-6 border-t border-gray-100 hidden" id="card-testimonials-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-accent-saffron pl-3">Testimonials</h2>
+            <div class="space-y-3" id="card-testimonials-list">
+                <!-- JS Rendered -->
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="px-6 py-6 border-t border-gray-100 hidden" id="card-faq-section">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-primary-blue pl-3">FAQ</h2>
+            <div class="space-y-3" id="card-faq-list">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        <!-- Enquiry Section -->
+        <div class="px-6 py-8 bg-blue-50">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 text-center">Send us a Message</h2>
+            <form id="card-enquiry-form" class="space-y-3 bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                <input type="text" name="name" placeholder="Your Name"
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-primary-blue outline-none"
+                    required>
+                <input type="tel" name="phone" placeholder="Mobile Number"
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-primary-blue outline-none"
+                    required>
+                <textarea name="msg" placeholder="How can we help?"
+                    class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:border-primary-blue outline-none"
+                    rows="3" required></textarea>
+                <button type="submit"
+                    class="w-full bg-primary-blue text-white py-2 rounded-lg font-bold text-sm shadow hover:bg-blue-900 transition">Send
+                    Enquiry</button>
+            </form>
+            <p id="enquiry-success" class="hidden text-center text-green-600 text-sm mt-3 font-bold"><i
+                    class="fa-solid fa-check-circle"></i> Sent! We will contact you soon.</p>
+        </div>
+        <div class="bg-white px-6 py-6 border-t border-gray-100">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 border-l-4 border-accent-saffron pl-3">Contact Details</h2>
+            <div class="space-y-4 text-sm text-gray-700">
+                <div class="flex items-start gap-3">
+                    <i class="fa-solid fa-location-dot text-primary-blue mt-1"></i>
+                    <p id="card-address">Loading address...</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-phone text-primary-blue"></i>
+                    <p id="card-phone">Loading...</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-envelope text-primary-blue"></i>
+                    <p id="card-email">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment QR -->
+        <div class="px-6 py-8 text-center bg-white">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Scan to Pay</h2>
+            <div class="inline-block p-4 bg-white border-2 border-dashed border-gray-300 rounded-xl relative">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+                    alt="UPI QR" class="w-40 h-40 opacity-80">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <span class="bg-white px-2 text-xs font-bold text-gray-400">DEMO QR</span>
+                </div>
+            </div>
+            <div class="flex justify-center gap-4 mt-4">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI"
+                    class="h-8">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Google_Pay_Logo.svg/2560px-Google_Pay_Logo.svg.png"
+                    alt="GPay" class="h-8">
+            </div>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="bg-gray-900 text-white py-6 text-center">
+            <p class="text-xs text-gray-400 mb-2">Create your own digital card at</p>
+            <a href="index.html" class="inline-flex items-center space-x-2">
+                <i class="fa-solid fa-id-card text-accent-saffron"></i>
+                <span class="font-bold font-serif">KaftyCards</span>
+            </a>
+        </div>
+
+    </div>
+
+
+
+    <script src="auth.js"></script>
+    <script src="card-loader.js"></script>
+</body>
+
+</html>

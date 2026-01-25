@@ -1,0 +1,193 @@
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Get UID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('uid');
+
+    let data;
+    if (userId) {
+        data = Auth.getData(userId);
+    } else {
+        // Fallback: Try local dev or default user
+        data = JSON.parse(localStorage.getItem('kafty_data')); // Legacy fallback
+        if (!data) {
+            const u1 = Auth.getData('user_1');
+            if (u1) data = u1;
+        }
+    }
+
+    if (data) {
+        const { profile, settings, services, portfolio, gallery, testimonials, customSections, faqs } = data;
+
+        // --- 1. THEME & COLORS ---
+        const pColor = settings.color || '#2C3E50';
+        const sColor = settings.secondaryColor || '#F39C12';
+
+        // Apply Colors (Header, Buttons, Titles)
+        document.querySelector('.bg-primary-blue').style.backgroundColor = pColor;
+        document.querySelectorAll('.text-primary-blue').forEach(el => el.style.color = pColor);
+        document.querySelector('#card-enquiry-form button').style.backgroundColor = pColor; // Form Button
+
+        document.querySelectorAll('.bg-accent-saffron').forEach(el => el.style.backgroundColor = sColor);
+        document.querySelectorAll('.text-accent-saffron').forEach(el => el.style.color = sColor);
+        document.querySelectorAll('.border-accent-saffron').forEach(el => el.style.borderColor = sColor);
+
+        // Name title
+        if (profile.name) {
+            document.querySelector('h1').textContent = profile.name;
+            document.querySelector('h1').style.color = pColor;
+            document.title = profile.name;
+        }
+
+        // --- FAVICON LOGIC ---
+        if (profile.logo) {
+            let link = document.querySelector("link[rel~='icon']");
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = profile.logo;
+        }
+
+        // --- 2. PROFILE DATA ---
+        if (profile.img) document.querySelector('img[alt="Logo"]').src = profile.img;
+        document.querySelector('.text-accent-saffron.uppercase').textContent = profile.industry || "Business";
+        document.querySelector('#card-desc').textContent = profile.description || "Welcome to our business page.";
+
+        if (document.getElementById('card-address')) document.getElementById('card-address').innerHTML = profile.address.replace(/\n/g, '<br>');
+        if (document.getElementById('card-phone')) document.getElementById('card-phone').textContent = profile.phone;
+        if (document.getElementById('card-email')) document.getElementById('card-email').textContent = profile.email;
+
+        // Links
+        const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+        phoneLinks.forEach(link => link.href = `tel:${profile.phone}`);
+        const waLinks = document.querySelectorAll('a[href^="https://wa.me"]');
+        waLinks.forEach(link => link.href = `https://wa.me/${profile.whatsapp.replace(/\D/g, '')}`);
+
+
+        // --- 3. DYNAMIC SECTIONS ---
+
+        // Services
+        const servicesList = document.getElementById('card-services-list');
+        if (servicesList && services && services.length > 0) {
+            servicesList.innerHTML = '';
+            services.forEach(item => {
+                servicesList.innerHTML += `
+                    <div class="bg-white border border-gray-100 p-3 rounded-lg shadow-sm text-center flex flex-col items-center">
+                        <div class="w-12 h-12 mb-2 rounded-full overflow-hidden bg-gray-50">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+                        <p class="text-sm font-bold text-gray-800 line-clamp-1">${item.title}</p>
+                        <p class="text-xs text-gray-500 mt-1 font-bold" style="color: ${pColor}">${item.price}</p>
+                    </div>`;
+            });
+        } else {
+            document.getElementById('card-services-section').classList.add('hidden');
+        }
+
+        // Portfolio
+        const portfolioList = document.getElementById('card-portfolio-list');
+        if (portfolioList && portfolio && portfolio.length > 0) {
+            document.getElementById('card-portfolio-section').classList.remove('hidden');
+            portfolioList.innerHTML = '';
+            portfolio.forEach(item => {
+                portfolioList.innerHTML += `
+                    <div class="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm">
+                        <div class="h-40 bg-gray-200">
+                            <img src="${item.img}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-3">
+                            <h3 class="font-bold text-gray-800 text-sm">${item.title}</h3>
+                            <p class="text-xs text-gray-500">${item.client || ''}</p>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Gallery
+        const galleryList = document.getElementById('card-gallery-list');
+        if (galleryList && gallery && gallery.length > 0) {
+            document.getElementById('card-gallery-section').classList.remove('hidden');
+            galleryList.innerHTML = '';
+            gallery.forEach(url => {
+                galleryList.innerHTML += `<div class="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer"><img src="${url}" class="w-full h-full object-cover hover:scale-105 transition"></div>`;
+            });
+        }
+
+        // Testimonials
+        const testimList = document.getElementById('card-testimonials-list');
+        if (testimList && testimonials && testimonials.length > 0) {
+            document.getElementById('card-testimonials-section').classList.remove('hidden');
+            testimList.innerHTML = '';
+            testimonials.forEach(item => {
+                testimList.innerHTML += `
+                    <div class="bg-white p-4 rounded-lg border border-gray-100 shadow-sm relative">
+                        <div class="text-yellow-400 text-xs mb-1">${'<i class="fa-solid fa-star"></i>'.repeat(item.rating)}</div>
+                        <p class="text-gray-600 text-xs italic mb-2">"${item.text}"</p>
+                        <p class="text-gray-800 text-xs font-bold text-right">- ${item.name}</p>
+                    </div>`;
+            });
+        }
+
+        // Customs
+        const customContainer = document.getElementById('card-custom-sections');
+        if (customContainer && customSections) {
+            customContainer.innerHTML = '';
+            customSections.forEach(sect => {
+                let contentHtml = '';
+                if (sect.type === 'text') contentHtml = `<p class="text-gray-600 text-sm leading-relaxed">${sect.content}</p>`;
+                else if (sect.type === 'list') contentHtml = `<ul class="space-y-2 mt-2">` + sect.items.map(i => `<li class="flex items-start gap-2 text-sm text-gray-700"><i class="fa-solid fa-check text-green-500 mt-1"></i> ${i}</li>`).join('') + `</ul>`;
+                customContainer.innerHTML += `
+                    <div class="bg-white border-t border-gray-100 pt-6">
+                        <h2 class="text-lg font-bold text-gray-800 mb-3 border-l-4 pl-3" style="border-color: ${pColor}">${sect.title}</h2>
+                        ${contentHtml}
+                    </div>`;
+            });
+        }
+
+        // --- NEW: FAQ RENDER ---
+        const faqList = document.getElementById('card-faq-list');
+        if (faqList && faqs && faqs.length > 0) {
+            document.getElementById('card-faq-section').classList.remove('hidden');
+            faqList.innerHTML = '';
+            faqs.forEach(item => {
+                faqList.innerHTML += `
+                    <details class="bg-white rounded-lg border border-gray-100 overflow-hidden group">
+                        <summary class="px-4 py-3 font-medium text-gray-800 cursor-pointer flex justify-between items-center text-sm">
+                            ${item.q}
+                            <i class="fa-solid fa-chevron-down text-gray-400 text-xs group-open:rotate-180 transition"></i>
+                        </summary>
+                        <div class="px-4 pb-4 text-xs text-gray-600 leading-relaxed border-t border-gray-50 pt-2">
+                            ${item.a}
+                        </div>
+                    </details>`;
+            });
+        }
+
+        // --- NEW: ENQUIRY FORM LOGIC ---
+        const enquiryForm = document.getElementById('card-enquiry-form');
+        if (enquiryForm) {
+            enquiryForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = {
+                    name: this.name.value,
+                    phone: this.phone.value,
+                    msg: this.msg.value,
+                    date: new Date().toLocaleDateString()
+                };
+
+                // Read fresh data, Update, Save
+                const currentData = Auth.getData(userId || 'user_1'); // Use ID from scope
+                if (!currentData.enquiries) currentData.enquiries = [];
+                currentData.enquiries.push(formData);
+                Auth.saveData(userId || 'user_1', currentData);
+
+                this.reset();
+                const successMsg = document.getElementById('enquiry-success');
+                successMsg.classList.remove('hidden');
+                setTimeout(() => successMsg.classList.add('hidden'), 5000);
+            });
+        }
+    }
+});
