@@ -133,6 +133,57 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // --- Settings Logic ---
+    function renderSettings() {
+        // Layout
+        const currentLayout = appData.settings.layout || 'standard';
+        if (currentLayout === 'modern') {
+            document.getElementById('layout-modern').checked = true;
+        } else {
+            document.getElementById('layout-standard').checked = true;
+        }
+        updateVisuals(); // Helper to update selected border styles
+
+        // Colors is handled by renderThemes/color pickers init
+        document.getElementById('primary-color-picker').value = appData.settings.color || '#2C3E50';
+        document.getElementById('secondary-color-picker').value = appData.settings.secondaryColor || '#F39C12';
+    }
+
+    function updateVisuals() {
+        // Layout Visuals
+        document.querySelectorAll('input[name="layout"]').forEach(radio => {
+            const label = radio.parentElement;
+            if (radio.checked) {
+                label.classList.add('border-2', 'border-primary-blue', 'bg-blue-50');
+                label.classList.remove('border-gray-200');
+            } else {
+                label.classList.remove('border-2', 'border-primary-blue', 'bg-blue-50');
+                label.classList.add('border-gray-200');
+            }
+        });
+    }
+
+    // Change Listeners
+    document.querySelectorAll('input[name="layout"]').forEach(radio => {
+        radio.addEventListener('change', updateVisuals);
+    });
+
+    document.getElementById('btn-update-settings')?.addEventListener('click', () => {
+        // Save Layout
+        const selectedLayout = document.querySelector('input[name="layout"]:checked')?.value || 'standard';
+        appData.settings.layout = selectedLayout;
+
+        // Save Colors (Manual Picker)
+        appData.settings.color = document.getElementById('primary-color-picker').value;
+        appData.settings.secondaryColor = document.getElementById('secondary-color-picker').value;
+
+        // Save Button Visibility (Future implementation, checkboxes placeholders currently)
+        // ...
+
+        saveData();
+        showToast('Card Settings Updated!');
+    });
+
     // --- Modal & Renders ---
     const modal = document.getElementById('modal-backdrop');
     function openModal(title, html) { document.getElementById('modal-title').textContent = title; document.getElementById('modal-content').innerHTML = html; modal.classList.remove('hidden'); }
@@ -143,7 +194,16 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderServices() {
         const c = document.getElementById('services-list'); c.innerHTML = '';
         if (appData.services.length === 0) c.innerHTML = '<p class="text-gray-400 py-4 text-center">No services.</p>';
-        else appData.services.forEach(i => c.innerHTML += `<div class="bg-white p-4 rounded-xl border flex gap-4"><img src="${i.img}" class="w-16 h-16 rounded object-cover"><div class="flex-1"><h3 class="font-bold">${i.title}</h3><p class="text-sm text-gray-500">${i.price}</p></div><button onclick="deleteService(${i.id})" class="text-red-500"><i class="fa fa-trash"></i></button></div>`);
+        else appData.services.forEach(i => c.innerHTML += `
+            <div class="bg-white p-4 rounded-xl border flex gap-4">
+                <img src="${i.img}" class="w-16 h-16 rounded object-cover">
+                <div class="flex-1">
+                    <h3 class="font-bold">${i.title}</h3>
+                    <p class="text-sm text-gray-500 font-bold">${i.price}</p>
+                    ${i.desc ? `<p class="text-xs text-gray-400 mt-1 line-clamp-2">${i.desc}</p>` : ''}
+                </div>
+                <button onclick="deleteService(${i.id})" class="text-red-500"><i class="fa fa-trash"></i></button>
+            </div>`);
     }
     function renderPortfolio() {
         const c = document.getElementById('portfolio-list'); c.innerHTML = '';
@@ -172,9 +232,31 @@ document.addEventListener('DOMContentLoaded', function () {
         else[...appData.enquiries].reverse().forEach((i, idx) => c.innerHTML += `<div class="bg-white p-4 rounded border relative"><button onclick="deleteEnquiry(${appData.enquiries.length - 1 - idx})" class="absolute top-2 right-2 text-gray-300 hover:text-red-500"><i class="fa fa-trash"></i></button><h3 class="font-bold">${i.name}</h3><p class="text-xs text-gray-500">${i.date || ''}</p><p class="text-sm mt-1 bg-gray-50 p-2 rounded">"${i.msg}"</p><a href="https://wa.me/${i.phone}" target="_blank" class="text-green-600 text-xs font-bold mt-2 inline-block">Reply WhatsApp</a></div>`);
     }
     function renderThemes() {
-        const t = [{ p: '#2C3E50', s: '#F39C12' }, { p: '#1a237e', s: '#c2185b' }, { p: '#004d40', s: '#ffca28' }, { p: '#b71c1c', s: '#212121' }, { p: '#4a148c', s: '#00e5ff' }, { p: '#1b5e20', s: '#aeea00' }, { p: '#3e2723', s: '#d7ccc8' }, { p: '#263238', s: '#ff5722' }, { p: '#0d47a1', s: '#ffeb3b' }, { p: '#000000', s: '#ffffff' }];
+        const t = [
+            { p: '#2C3E50', s: '#F39C12' }, // Corporate (Default)
+            { p: '#1a237e', s: '#c2185b' }, // Royal Blue/Pink
+            { p: '#004d40', s: '#ffca28' }, // Teal/Amber
+            { p: '#b71c1c', s: '#212121' }, // Red/Black
+            { p: '#4a148c', s: '#00e5ff' }, // Purple/Cyan
+            { p: '#1b5e20', s: '#aeea00' }, // Forest/Lime
+            { p: '#3e2723', s: '#d7ccc8' }, // Brown/Beige
+            { p: '#263238', s: '#ff5722' }, // Dark/Orange
+            { p: '#0d47a1', s: '#ffeb3b' }, // Navy/Yellow
+            { p: '#000000', s: '#ffffff' }  // Black/White
+        ];
         const c = document.getElementById('theme-grid');
-        if (c) { c.innerHTML = ''; t.forEach(x => c.innerHTML += `<button onclick="applyTheme('${x.p}','${x.s}')" class="h-10 border rounded overflow-hidden flex hover:scale-105 transition"><div class="w-1/2 h-full" style="background:${x.p}"></div><div class="w-1/2 h-full" style="background:${x.s}"></div></button>`); }
+        if (c) {
+            c.innerHTML = '';
+            t.forEach(x => {
+                c.innerHTML += `
+                <button type="button" onclick="applyTheme('${x.p}','${x.s}')" 
+                    class="h-12 w-full border-2 border-gray-200 rounded-lg overflow-hidden flex hover:scale-105 transition hover:shadow-md hover:border-blue-500" 
+                    title="Primary: ${x.p}, Secondary: ${x.s}">
+                    <div class="w-1/2 h-full" style="background:${x.p}"></div>
+                    <div class="w-1/2 h-full" style="background:${x.s}"></div>
+                </button>`;
+            });
+        }
     }
 
 
@@ -190,11 +272,138 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     // --- Add Buttons ---
-    document.getElementById('btn-add-service').onclick = () => { openModal('Add Service', `<form id="fs" class="space-y-3"><input id="st" placeholder="Name" class="w-full border p-2 rounded" required><input id="sp" placeholder="Price" class="w-full border p-2 rounded"><input type="file" id="si" class="w-full"><button class="w-full bg-blue-800 text-white py-2 rounded">Add</button></form>`); document.getElementById('fs').onsubmit = async (e) => { e.preventDefault(); let img = "https://images.unsplash.com/photo-1581094794320-c91bed78281f?w=200&q=80"; const f = document.getElementById('si').files[0]; if (f) img = await fileToDataUri(f); appData.services.push({ id: Date.now(), title: document.getElementById('st').value, price: document.getElementById('sp').value, img }); saveData(); renderServices(); closeModal(); showToast('Added'); } };
+    // --- Add Buttons ---
+    document.getElementById('btn-add-service').onclick = () => {
+        openModal('Add Service', `
+            <form id="fs" class="space-y-3">
+                <input id="st" placeholder="Name" class="w-full border p-2 rounded" required>
+                <input id="sp" placeholder="Price" class="w-full border p-2 rounded">
+                <textarea id="sd" placeholder="Description (Optional)" class="w-full border p-2 rounded h-20"></textarea>
+                <input type="file" id="si" class="w-full">
+                <button class="w-full bg-blue-800 text-white py-2 rounded">Add</button>
+            </form>
+        `);
+        document.getElementById('fs').onsubmit = async (e) => {
+            e.preventDefault();
+            let img = "https://images.unsplash.com/photo-1581094794320-c91bed78281f?w=200&q=80";
+            const f = document.getElementById('si').files[0];
+            if (f) img = await fileToDataUri(f);
+            appData.services.push({
+                id: Date.now(),
+                title: document.getElementById('st').value,
+                price: document.getElementById('sp').value,
+                desc: document.getElementById('sd').value,
+                img
+            });
+            saveData();
+            renderServices();
+            closeModal();
+            showToast('Added');
+        }
+    };
 
     document.getElementById('btn-add-portfolio').onclick = () => { openModal('Add Work', `<form id="fp" class="space-y-3"><input id="pt" placeholder="Title" class="w-full border p-2 rounded" required><input id="pc" placeholder="Client" class="w-full border p-2 rounded"><input type="file" id="pi" class="w-full"><button class="w-full bg-blue-800 text-white py-2 rounded">Add</button></form>`); document.getElementById('fp').onsubmit = async (e) => { e.preventDefault(); let img = "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=400&q=80"; const f = document.getElementById('pi').files[0]; if (f) img = await fileToDataUri(f); appData.portfolio.push({ id: Date.now(), title: document.getElementById('pt').value, client: document.getElementById('pc').value, img }); saveData(); renderPortfolio(); closeModal(); showToast('Added'); } };
 
-    document.getElementById('btn-add-gallery').onclick = () => { openModal('Upload', `<form id="fg" class="p-4 text-center border-dashed border-2 rounded"><input type="file" id="gi" required class="mb-4"><button class="bg-blue-800 text-white px-4 py-2 rounded">Upload</button></form>`); document.getElementById('fg').onsubmit = async (e) => { e.preventDefault(); const f = document.getElementById('gi').files[0]; if (f) { appData.gallery.push(await fileToDataUri(f)); saveData(); renderGallery(); closeModal(); showToast('Uploaded'); } } };
+    document.getElementById('btn-add-gallery').onclick = () => {
+        const modalHtml = `
+            <div id="drop-zone" class="p-8 text-center border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 transition cursor-pointer relative">
+                <input type="file" id="gi" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*" multiple>
+                <div class="pointer-events-none">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-primary-blue mb-2"></i>
+                    <p class="text-gray-600 font-medium">Drag & Drop images here</p>
+                    <p class="text-xs text-gray-400 mt-1">or click to browse</p>
+                </div>
+            </div>
+            <div id="preview-area" class="mt-4 grid grid-cols-3 gap-2"></div>
+            <button id="upload-btn" class="w-full bg-primary-blue text-white py-2 rounded-lg mt-4 hidden">Upload Selected</button>
+        `;
+
+        openModal('Upload Images', modalHtml);
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('gi');
+        const previewArea = document.getElementById('preview-area');
+        const uploadBtn = document.getElementById('upload-btn');
+        let selectedFiles = [];
+
+        // Drag & Drop Visuals
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('border-primary-blue', 'bg-blue-50');
+            }, false)
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('border-primary-blue', 'bg-blue-50');
+            }, false)
+        });
+
+        // Handle File Selection
+        const handleFiles = (files) => {
+            if (!files.length) return;
+            selectedFiles = [...selectedFiles, ...Array.from(files)];
+            updatePreview();
+        };
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        });
+
+        fileInput.addEventListener('change', function () {
+            handleFiles(this.files);
+        });
+
+        // Update Preview
+        function updatePreview() {
+            previewArea.innerHTML = '';
+            if (selectedFiles.length > 0) {
+                uploadBtn.classList.remove('hidden');
+                selectedFiles.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        previewArea.innerHTML += `
+                            <div class="relative bg-gray-100 rounded overflow-hidden aspect-square">
+                                <img src="${e.target.result}" class="w-full h-full object-cover">
+                                <button onclick="window.removeSelectedFile(${index})" class="absolute top-1 right-1 bg-white text-red-500 rounded-full w-5 h-5 flex justify-center items-center shadow-sm text-xs"><i class="fa fa-times"></i></button>
+                            </div>`;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                uploadBtn.classList.add('hidden');
+            }
+        }
+
+        // Global helper for the preview remove button limitation (quick hack for modal scope)
+        window.removeSelectedFile = (index) => {
+            selectedFiles.splice(index, 1);
+            updatePreview();
+        };
+
+        // Upload Action
+        uploadBtn.onclick = async () => {
+            uploadBtn.textContent = 'Uploading...';
+            uploadBtn.disabled = true;
+
+            for (const file of selectedFiles) {
+                const base64 = await fileToDataUri(file);
+                appData.gallery.push(base64);
+            }
+
+            saveData();
+            renderGallery();
+            closeModal();
+            showToast('Images Uploaded!');
+            delete window.removeSelectedFile; // Cleanup
+        };
+    };
 
     document.getElementById('btn-add-testimonial').onclick = () => { openModal('Add Review', `<form id="ft" class="space-y-3"><input id="tn" placeholder="Name" class="w-full border p-2 rounded" required><textarea id="tt" placeholder="Review" class="w-full border p-2 rounded" required></textarea><button class="w-full bg-blue-800 text-white py-2 rounded">Add</button></form>`); document.getElementById('ft').onsubmit = (e) => { e.preventDefault(); appData.testimonials.push({ id: Date.now(), name: document.getElementById('tn').value, text: document.getElementById('tt').value }); saveData(); renderTestimonials(); closeModal(); showToast('Added'); } };
 
@@ -203,7 +412,15 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('btn-add-faq').onclick = () => { openModal('Add FAQ', `<form id="ff" class="space-y-3"><input id="fq" placeholder="Question" class="w-full border p-2 rounded" required><textarea id="fa" placeholder="Answer" class="w-full border p-2 rounded h-20" required></textarea><button class="w-full bg-blue-800 text-white py-2 rounded">Add</button></form>`); document.getElementById('ff').onsubmit = (e) => { e.preventDefault(); appData.faqs.push({ id: Date.now(), q: document.getElementById('fq').value, a: document.getElementById('fa').value }); saveData(); renderFAQs(); closeModal(); showToast('Added'); } };
 
     // Init
-    renderProfileInputs(); renderThemes(); renderServices(); renderPortfolio(); renderGallery(); renderTestimonials(); renderCustomSections(); renderFAQs(); renderEnquiries();
+
+    // Expose applyTheme globally
+    window.applyTheme = function (p, s) {
+        document.getElementById('primary-color-picker').value = p;
+        document.getElementById('secondary-color-picker').value = s;
+        showToast('Theme Colors Applied! Click "Update Card" to Save.');
+    };
+
+    renderProfileInputs(); renderSettings(); renderThemes(); renderServices(); renderPortfolio(); renderGallery(); renderTestimonials(); renderCustomSections(); renderFAQs(); renderEnquiries();
 
     document.querySelectorAll('.btn-save-section').forEach(b => b.addEventListener('click', () => showToast('Saved')));
 });

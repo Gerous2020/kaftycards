@@ -23,6 +23,22 @@
 
 <body class="bg-gray-100 font-sans antialiased min-h-screen flex justify-center items-start pt-0 md:pt-10 pb-10">
 
+    <!-- Preloader -->
+    <div id="preloader"
+        class="fixed inset-0 z-[9999] bg-white flex items-center justify-center transition-opacity duration-500">
+        <div class="flex flex-col items-center animate-pulse">
+            <div class="w-16 h-16 rounded-full border-4 border-gray-200 border-t-orange-500 animate-spin mb-4"></div>
+            <p class="text-sm font-semibold text-gray-400 tracking-widest">LOADING CARD</p>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            preloader.style.opacity = '0';
+            setTimeout(() => { preloader.style.display = 'none'; }, 500);
+        });
+    </script>
+
     <!-- Card Container -->
     <div class="w-full max-w-md bg-white md:rounded-3xl shadow-2xl overflow-hidden min-h-screen md:min-h-0">
 

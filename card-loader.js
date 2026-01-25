@@ -39,6 +39,74 @@ document.addEventListener('DOMContentLoaded', function () {
             document.title = profile.name;
         }
 
+        // --- LAYOUT LOGIC ---
+        // --- LAYOUT LOGIC ---
+        if (settings.layout === 'modern') {
+            const cardContainer = document.querySelector('.max-w-md'); // Main card wrapper
+            const profileSection = document.querySelector('.px-6.-mt-24'); // Profile Image Section
+
+            // 1. Change Background and Border
+            cardContainer.classList.remove('md:rounded-3xl');
+            cardContainer.classList.add('md:rounded-xl', 'border-t-8');
+            cardContainer.style.borderColor = pColor;
+
+            // 2. Hide Standard Header Curve
+            const header = document.querySelector('.relative.h-48');
+            header.classList.add('hidden');
+
+            // 3. Re-style Profile Section (Left Aligned, Top Padding)
+            profileSection.classList.remove('-mt-24', 'text-center');
+            profileSection.classList.add('pt-12', 'pb-4', 'flex', 'flex-col', 'items-start', 'text-left');
+
+            // Profile Image styling
+            const imgContainer = profileSection.querySelector('.inline-block');
+            imgContainer.classList.remove('p-1', 'bg-white', 'profile-shadow');
+            const imgDiv = imgContainer.querySelector('div'); // The div with the image
+            imgDiv.classList.remove('border-4', 'border-white', 'rounded-full');
+            imgDiv.classList.add('rounded-xl', 'shadow-md');
+            imgDiv.style.width = '100px';
+            imgDiv.style.height = '100px';
+
+            // 4. Update Header Text Alignment
+            const profileTexts = profileSection.querySelectorAll('p, h1, div');
+            profileTexts.forEach(el => {
+                if (el.classList.contains('justify-center')) {
+                    el.classList.remove('justify-center');
+                    el.classList.add('justify-start');
+                }
+            });
+
+            // 5. Update Action Buttons (Vibrant & Aligned)
+            const btnGrid = document.querySelector('.grid.grid-cols-4');
+            btnGrid.classList.remove('grid-cols-4', 'gap-4');
+            btnGrid.classList.add('grid-cols-2', 'gap-3');
+
+            btnGrid.querySelectorAll('a').forEach(btn => {
+                btn.classList.remove('flex-col', 'items-center', 'gap-2');
+                btn.classList.add('flex-row', 'items-center', 'gap-3', 'p-3', 'rounded-xl', 'border', 'transition', 'hover:shadow-md');
+
+                // Color Styling
+                btn.style.borderColor = `${pColor}20`; // Very light border
+                btn.style.backgroundColor = 'white';
+
+                const iconDiv = btn.querySelector('div');
+                // Remove old circle backgrounds
+                iconDiv.className = ''; // Reset class
+                iconDiv.classList.add('text-2xl');
+                iconDiv.style.color = pColor; // Primary color for icons
+
+                const label = btn.querySelector('span');
+                label.classList.remove('text-xs', 'text-gray-600');
+                label.classList.add('text-sm', 'font-bold', 'text-gray-700');
+            });
+
+            // 6. Section Headers (Left Align Borders)
+            document.querySelectorAll('.border-l-4').forEach(h2 => {
+                h2.style.borderColor = sColor; // Secondary color accent
+            });
+        }
+
+
         // --- FAVICON LOGIC ---
         if (profile.logo) {
             let link = document.querySelector("link[rel~='icon']");
@@ -80,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <p class="text-sm font-bold text-gray-800 line-clamp-1">${item.title}</p>
                         <p class="text-xs text-gray-500 mt-1 font-bold" style="color: ${pColor}">${item.price}</p>
+                        ${item.desc ? `<p class="text-xs text-gray-400 mt-1 line-clamp-2 leading-tight">${item.desc}</p>` : ''}
                     </div>`;
             });
         } else {
