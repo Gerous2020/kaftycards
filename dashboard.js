@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
 
     // --- AUTH CHECK ---
     const userId = Auth.getCurrentUser();
@@ -8,11 +8,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Load Data ---
-    let appData = Auth.getData(userId);
+    let appData = await Auth.getData(userId);
     if (!appData) {
-        // Fallback should not happen due to seeding, but just in case
-        Auth.init();
-        appData = Auth.getData(userId);
+        alert('Failed to load data. Please relogin.');
+        Auth.logout();
+        return;
     }
 
     // Integrity Checks

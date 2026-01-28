@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rubik:wght@400;500;700&display=swap"
         rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -54,96 +55,280 @@
             <i class="fa-solid fa-id-card text-accent-saffron text-3xl"></i>
             <span class="text-2xl font-bold text-primary-blue font-serif">KaftyCards</span>
         </a>
-        <h2 class="text-3xl font-extrabold text-primary-blue font-serif">
+        <h2 id="page-title" class="text-3xl font-extrabold text-primary-blue font-serif">
             Welcome Back
         </h2>
-        <p class="mt-2 text-sm text-gray-600">
+        <p id="page-subtitle" class="mt-2 text-sm text-gray-600">
             Sign in to manage your digital visiting card.
         </p>
     </div>
 
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow-lg sm:rounded-xl sm:px-10 border border-gray-100">
-            <form class="space-y-6"
-                onsubmit="event.preventDefault(); localStorage.setItem('kafty_auth', 'true'); window.location.href='dashboard.html';">
 
-                <!-- Email/Phone Input -->
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">
-                        Email Address or Mobile Number
-                    </label>
-                    <div class="mt-1">
-                        <input id="email" name="email" type="text" autocomplete="email" required
-                            class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition"
-                            placeholder="e.g. 9876543210 or name@example.com">
-                    </div>
-                </div>
+            <!-- Google Auth Config (Handled in JS) -->
 
-                <!-- Password Input -->
-                <div>
-                    <div class="flex items-center justify-between">
-                        <label for="password" class="block text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-                        <div class="text-sm">
-                            <a href="#" class="font-medium text-primary-blue hover:text-blue-800">
-                                Forgot password?
-                            </a>
+            <!-- LOGIN FORM CONTAINER -->
+            <div id="login-container">
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address or
+                            Mobile</label>
+                        <div class="mt-1">
+                            <input id="login-email" name="email" type="text" autocomplete="email" required
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="e.g. 9876543210 or name@example.com">
                         </div>
                     </div>
-                    <div class="mt-1">
-                        <input id="password" name="password" type="password" autocomplete="current-password" required
-                            class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition"
-                            placeholder="Enter your password">
-                    </div>
-                </div>
 
-                <!-- Submit Button -->
-                <div>
-                    <button type="submit"
-                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-bold text-white bg-primary-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue transition">
-                        Sign In
-                    </button>
-                </div>
-            </form>
-
-            <div class="mt-6">
-                <div class="relative">
-                    <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300"></div>
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <div class="text-sm">
+                                <a href="#" class="font-medium text-primary-blue hover:text-blue-800">Forgot
+                                    password?</a>
+                            </div>
+                        </div>
+                        <div class="mt-1">
+                            <input id="login-password" name="password" type="password" autocomplete="current-password"
+                                required
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="Enter your password">
+                        </div>
                     </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-white text-gray-500">
-                            Or
-                        </span>
+
+                    <div>
+                        <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-bold text-white bg-primary-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue transition transform active:scale-95">
+                            Sign In
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-center">
+                        <div id="g_id_signin_login"></div>
                     </div>
                 </div>
 
                 <div class="mt-6 text-center">
                     <p class="text-gray-600 text-sm">
                         Don't have an account?
-                        <a href="signup.html" class="font-bold text-accent-saffron hover:text-orange-600">
+                        <button onclick="toggleAuthMode('signup')"
+                            class="font-bold text-accent-saffron hover:text-orange-600 hover:underline">
                             Create a new account
-                        </a>
+                        </button>
                     </p>
                 </div>
             </div>
-        </div>
 
+            <!-- SIGNUP FORM CONTAINER (Hidden) -->
+            <div id="signup-container" class="hidden">
+                <form id="signup-form" class="space-y-5">
+                    <div>
+                        <label for="signup-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <div class="mt-1">
+                            <input id="signup-name" name="name" type="text" required
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="Your Name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="signup-business" class="block text-sm font-medium text-gray-700">Business
+                            Name</label>
+                        <div class="mt-1">
+                            <input id="signup-business" name="business_name" type="text" required
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="e.g. Sri Balaji Hardware">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="signup-phone" class="block text-sm font-medium text-gray-700">Mobile Number</label>
+                        <div class="mt-1">
+                            <input id="signup-phone" name="phone" type="tel" required
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="signup-email" class="block text-sm font-medium text-gray-700">Email Address
+                            (Optional)</label>
+                        <div class="mt-1">
+                            <input id="signup-email" name="email" type="email"
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="name@example.com">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="signup-password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="mt-1">
+                            <input id="signup-password" name="password" type="password" required
+                                class="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition animate-input"
+                                placeholder="Create a password">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center">
+                        <input id="signup-terms" name="terms" type="checkbox" required
+                            class="h-4 w-4 text-primary-blue focus:ring-primary-blue border-gray-300 rounded">
+                        <label for="signup-terms" class="ml-2 block text-sm text-gray-900">
+                            I agree to the <a href="#" class="text-primary-blue hover:text-blue-800 font-medium">Terms
+                                and Conditions</a>
+                        </label>
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-bold text-white bg-primary-blue hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue transition transform active:scale-95">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or sign up with</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-center">
+                        <div id="g_id_signin_signup"></div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600 text-sm">
+                        Already have an account?
+                        <button onclick="toggleAuthMode('login')"
+                            class="font-bold text-accent-saffron hover:text-orange-600 hover:underline">
+                            Log in
+                        </button>
+                    </p>
+                </div>
+            </div>
+
+        </div>
         <div class="mt-8 text-center text-xs text-gray-500">
             &copy; 2026 KaftyCards. Made in India.
         </div>
     </div>
 
-    <div id="toast" class="fixed top-5 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hidden">
+    <div id="toast" class="fixed top-5 right-5 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg hidden z-50">
         <span id="toast-msg">Error</span>
     </div>
 
     <script src="auth.js"></script>
     <script>
-        const loginForm = document.querySelector('form');
-        const emailInput = document.getElementById('email');
-        const passInput = document.getElementById('password');
+        // --- STATE MANAGEMENT ---
+        let currentMode = 'login'; // 'login' or 'signup'
+
+        // --- TOGGLE LOGIC ---
+        function toggleAuthMode(mode) {
+            currentMode = mode;
+            const loginContainer = document.getElementById('login-container');
+            const signupContainer = document.getElementById('signup-container');
+            const pageTitle = document.getElementById('page-title');
+            const pageSubtitle = document.getElementById('page-subtitle');
+
+            if (mode === 'signup') {
+                loginContainer.classList.add('hidden');
+                signupContainer.classList.remove('hidden');
+                pageTitle.textContent = "Create Your Digital Card";
+                pageSubtitle.textContent = "Join thousands of Indian businesses today.";
+                // Update URL hash
+                history.replaceState(null, null, '#signup');
+            } else {
+                signupContainer.classList.add('hidden');
+                loginContainer.classList.remove('hidden');
+                pageTitle.textContent = "Welcome Back";
+                pageSubtitle.textContent = "Sign in to manage your digital visiting card.";
+                // Update URL hash
+                history.replaceState(null, null, '#login');
+            }
+        }
+
+        // Check hash on load
+        window.addEventListener('load', () => {
+            if (window.location.hash === '#signup') {
+                toggleAuthMode('signup');
+            }
+        });
+
+        // --- GOOGLE AUTH ---
+        fetch('http://localhost:5000/api/config')
+            .then(res => res.json())
+            .then(data => {
+                const clientId = data.googleClientId;
+                if (!clientId) {
+                    console.error("No Google Client ID found.");
+                    return;
+                }
+
+                // Initialize Google Auth using JavaScript API
+                google.accounts.id.initialize({
+                    client_id: clientId,
+                    callback: handleCredentialResponse,
+                    auto_select: false
+                });
+
+                // Render Buttons
+                renderGoogleButtons();
+            })
+            .catch(err => console.error("Error loading config:", err));
+
+        function renderGoogleButtons() {
+            // Render Login Button
+            const loginBtnContainer = document.getElementById('g_id_signin_login');
+            if (loginBtnContainer) {
+                google.accounts.id.renderButton(
+                    loginBtnContainer,
+                    { theme: "outline", size: "large", width: 320, text: "sign_in_with", shape: "pill" }
+                );
+            }
+
+            // Render Signup Button
+            const signupBtnContainer = document.getElementById('g_id_signin_signup');
+            if (signupBtnContainer) {
+                google.accounts.id.renderButton(
+                    signupBtnContainer,
+                    { theme: "outline", size: "large", width: 320, text: "signup_with", shape: "pill" }
+                );
+            }
+        }
+
+        async function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+
+            // Use currentMode to determine context
+            const mode = currentMode === 'signup' ? 'signup' : 'login';
+
+            const result = await Auth.googleLogin(response.credential, mode);
+            if (result.success) {
+                if (mode === 'signup') alert('Account created successfully!');
+                window.location.href = 'dashboard.html';
+            } else {
+                showError(result.message);
+            }
+        }
+
+        // --- FORM HANDLERS ---
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
         const toast = document.getElementById('toast');
         const toastMsg = document.getElementById('toast-msg');
 
@@ -153,31 +338,53 @@
             setTimeout(() => toast.classList.add('hidden'), 3000);
         }
 
-        loginForm.addEventListener('submit', function (e) {
+        // Login Handler
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
 
-            const email = emailInput.value.trim();
-            const password = passInput.value.trim();
+            if (!email || !password) return showError('Please fill in all fields.');
 
-            // Validation
-            if (!email || !password) {
-                showError('Please fill in all fields.');
-                return;
-            }
-
-            // Basic Email Regex
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                // Allow simple phone login for demo if numeric, else error
-                if (isNaN(email)) {
-                    showError('Please enter a valid email address.');
-                    return;
-                }
-            }
-
-            const result = Auth.login(email, password);
+            const result = await Auth.login(email, password);
             if (result.success) {
                 window.location.href = 'dashboard.html';
+            } else {
+                showError(result.message);
+            }
+        });
+
+        // Signup Handler
+        signupForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value.trim();
+            const busName = document.getElementById('signup-business').value.trim();
+            const phone = document.getElementById('signup-phone').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value.trim();
+            const terms = document.getElementById('signup-terms').checked;
+
+            if (!name || !busName || !phone || !password) return showError('Please fill in all required fields.');
+            if (password.length < 6) return showError('Password must be at least 6 characters.');
+            if (!terms) return showError('You must agree to the Terms.');
+            if (!email) return showError('Email is required for login.');
+
+            const result = await Auth.register({
+                name: busName,
+                email: email,
+                password: password,
+                phone: phone
+            });
+
+            if (result.success) {
+                alert('Account created! Logging you in...');
+                // Auto login after signup
+                const loginRes = await Auth.login(email, password);
+                if (loginRes.success) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'login.html';
+                }
             } else {
                 showError(result.message);
             }

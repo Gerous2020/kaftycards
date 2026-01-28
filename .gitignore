@@ -1,22 +1,21 @@
 # Dependencies
-node_modules/
+node_modules
 .pnp
 .pnp.js
 
-# Testing
-coverage/
-
-# Production
-build/
-
-
-# Misc
-.DS_Store
+# Environment
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Build
+dist/
+build/
+
+# Testing
+coverage/
 
 # Logs
 npm-debug.log*
@@ -30,4 +29,9 @@ yarn-error.log*
 *.swo
 
 # OS
+.DS_Store
 Thumbs.db
+
+# Temporary Scripts
+check-env.js
+test-db*.js

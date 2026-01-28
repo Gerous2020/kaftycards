@@ -1,19 +1,18 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async function () {
 
     // Get UID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const userId = urlParams.get('uid');
 
-    let data;
-    if (userId) {
-        data = Auth.getData(userId);
-    } else {
-        // Fallback: Try local dev or default user
-        data = JSON.parse(localStorage.getItem('kafty_data')); // Legacy fallback
-        if (!data) {
-            const u1 = Auth.getData('user_1');
-            if (u1) data = u1;
-        }
+    if (!userId) {
+        document.body.innerHTML = '<p class="text-white text-center mt-10">No User ID provided.</p>';
+        return;
+    }
+
+    const data = await Auth.getData(userId);
+    if (!data) {
+        document.body.innerHTML = '<p class="text-white text-center mt-10">Card not found.</p>';
+        return;
     }
 
     if (data) {
