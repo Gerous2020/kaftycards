@@ -1,7 +1,10 @@
 const Auth = {
     // --- KEY CONSTANTS ---
+    // --- KEY CONSTANTS ---
     CURRENT_USER_KEY: 'kafty_current_user',
-    API_URL: '/api', // Relative path for deployment compatibility
+    API_URL: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+        ? 'http://localhost:5000/api'
+        : '/api', // Use full URL for Live Server, relative for Prod/Node Server
 
     // --- INITIALIZATION ---
     init: function () {
