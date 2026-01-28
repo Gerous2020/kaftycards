@@ -52,18 +52,14 @@ router.post('/auth/google', async (req, res) => {
         let user = await User.findOne({ email });
 
         if (!user) {
-            if (mode === 'signup') {
-                // Register new user (Only for signup mode)
-                user = new User({ name, email, googleId });
-                await user.save();
+            // Auto-register new user regardless of mode ('login' or 'signup')
+            user = new User({ name, email, googleId });
+            await user.save();
 
-                // Seed Data
-                const cardData = new CardData(generateSeedData(user));
-                if (picture) cardData.profile.img = picture;
-                await cardData.save();
-            } else {
-                return res.status(400).json({ success: false, message: 'Email not registered. Please sign up first.' });
-            }
+            // Seed Data
+            const cardData = new CardData(generateSeedData(user));
+            if (picture) cardData.profile.img = picture;
+            await cardData.save();
         } else if (!user.googleId) {
             // Link existing account (Allowed in both modes)
             user.googleId = googleId;
