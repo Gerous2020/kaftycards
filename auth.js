@@ -1,7 +1,7 @@
 const Auth = {
     // --- KEY CONSTANTS ---
     CURRENT_USER_KEY: 'kafty_current_user',
-    API_URL: 'http://localhost:5000/api', // Change if deployed
+    API_URL: '/api', // Relative path for deployment compatibility
 
     // --- INITIALIZATION ---
     init: function () {
