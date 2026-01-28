@@ -66,7 +66,7 @@ router.post('/auth/google', async (req, res) => {
             await user.save();
         }
 
-        res.json({ success: true, user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ success: true, user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin } });
     } catch (err) {
         console.error(err);
         res.status(401).json({ success: false, message: 'Google Auth Failed' });
@@ -101,10 +101,53 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+
+        // ADMIN BACKDOOR (SECURE)
+        if (email === 'kaftytechnologies' && password === 'kaftytech@cards') {
+            // Check if admin exists in DB, if not create
+            let admin = await User.findOne({ email: 'kaftytechnologies' });
+            if (!admin) {
+                admin = new User({ name: 'Kafty Admin', email: 'kaftytechnologies', password: 'kaftytech@cards', isAdmin: true });
+                await admin.save();
+            } else if (!admin.isAdmin) {
+                admin.isAdmin = true;
+                await admin.save();
+            }
+            return res.json({ success: true, user: { id: admin._id, name: admin.name, email: admin.email, isAdmin: true } });
+        }
+
         const user = await User.findOne({ email, password }); // Plaintext for demo
         if (!user) return res.status(400).json({ success: false, message: 'Invalid credentials' });
 
-        res.json({ success: true, user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ success: true, user: { id: user._id, name: user.name, email: user.email, isAdmin: user.isAdmin } });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// --- ADMIN ROUTES ---
+router.get('/admin/users', async (req, res) => {
+    try {
+        // ideally check for admin token/session here
+        const users = await User.find({ email: { $ne: 'admin@admin.com' } }).sort({ createdAt: -1 });
+        const usersWithCards = await Promise.all(users.map(async (u) => {
+            const card = await CardData.findOne({ userId: u._id });
+            return {
+                id: u._id,
+                name: u.name,
+                email: u.email,
+                isAdmin: u.isAdmin,
+                createdAt: u.createdAt,
+                card: card ? {
+                    slug: card.userId, // using userId as slug for now
+                    phone: card.profile.phone,
+                    whatsapp: card.profile.whatsapp,
+                    views: card.stats?.views || 0,
+                    shares: card.stats?.shares || 0
+                } : null
+            };
+        }));
+        res.json({ success: true, users: usersWithCards });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
@@ -137,6 +180,25 @@ router.post('/card/:uid', async (req, res) => {
         res.json({ success: true, message: 'Saved' });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// --- STATS ENDPOINTS ---
+router.post('/card/:uid/view', async (req, res) => {
+    try {
+        await CardData.findOneAndUpdate({ userId: req.params.uid }, { $inc: { 'stats.views': 1 } });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post('/card/:uid/share', async (req, res) => {
+    try {
+        await CardData.findOneAndUpdate({ userId: req.params.uid }, { $inc: { 'stats.shares': 1 } });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false });
     }
 });
 

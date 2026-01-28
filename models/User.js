@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String }, // Optional for Google Auth users
     googleId: { type: String }, // NEW: For Google Auth
     type: { type: String, default: 'personal' },
+    isAdmin: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
 });
 

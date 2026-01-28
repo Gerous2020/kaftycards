@@ -13,7 +13,12 @@ const CardDataSchema = new mongoose.Schema({
         map: String,
         hours: String,
         img: String, // Base64 or URL
-        logo: String
+        logo: String,
+        paymentQr: String // Base64 or URL
+    },
+    stats: {
+        views: { type: Number, default: 0 },
+        shares: { type: Number, default: 0 }
     },
     settings: {
         layout: { type: String, default: 'standard' },

@@ -34,8 +34,10 @@
     <script>
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            preloader.style.opacity = '0';
-            setTimeout(() => { preloader.style.display = 'none'; }, 500);
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.display = 'none'; }, 500);
+            }
         });
     </script>
 
@@ -55,7 +57,7 @@
                 </svg>
             </div>
             <!-- Share Button -->
-            <button
+            <button id="btn-share-card"
                 class="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition">
                 <i class="fa-solid fa-share-nodes text-xl"></i>
             </button>

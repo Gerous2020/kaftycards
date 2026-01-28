@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     const data = await Auth.getData(userId);
+
+    // Increment View Count
+    if (userId) {
+        fetch(`${Auth.API_URL}/card/${userId}/view`, { method: 'POST' }).catch(err => console.error(err));
+    }
+
     if (!data) {
         document.body.innerHTML = '<p class="text-white text-center mt-10">Card not found.</p>';
         return;
@@ -64,7 +70,17 @@ document.addEventListener('DOMContentLoaded', async function () {
             imgDiv.classList.remove('border-4', 'border-white', 'rounded-full');
             imgDiv.classList.add('rounded-xl', 'shadow-md');
             imgDiv.style.width = '100px';
+            imgDiv.style.width = '100px';
             imgDiv.style.height = '100px';
+
+            // Payment QR Render (Modern)
+            if (profile.paymentQr) {
+                const qrContainer = document.createElement('div');
+                qrContainer.className = 'mt-4 bg-white p-2 rounded-lg shadow-sm border border-gray-100';
+                qrContainer.innerHTML = `<p class="text-[10px] text-center font-bold mb-1 text-gray-500">SCAN TO PAY</p><img src="${profile.paymentQr}" class="w-20 h-20 object-contain">`;
+                profileSection.appendChild(qrContainer);
+            }
+
 
             // 4. Update Header Text Alignment
             const profileTexts = profileSection.querySelectorAll('p, h1, div');
@@ -105,6 +121,34 @@ document.addEventListener('DOMContentLoaded', async function () {
             });
         }
 
+
+        // --- SHARE LOGIC ---
+        const shareBtn = document.getElementById('btn-share-card'); // Correctly target the share button
+        if (shareBtn) {
+            shareBtn.onclick = async (e) => {
+                e.preventDefault();
+
+                // Track Share
+                fetch(`${Auth.API_URL}/card/${userId}/share`, { method: 'POST' }).catch(console.error);
+
+                const shareData = {
+                    title: profile.name || 'Digital Business Card',
+                    text: `Check out my digital business card: ${profile.name}`,
+                    url: window.location.href
+                };
+
+                if (navigator.share) {
+                    try {
+                        await navigator.share(shareData);
+                    } catch (err) {
+                        console.log('Share canceled');
+                    }
+                } else {
+                    // Fallback to WhatsApp
+                    window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`, '_blank');
+                }
+            };
+        }
 
         // --- FAVICON LOGIC ---
         if (profile.logo) {

@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Integrity Checks
     if (!appData.profile.logo) appData.profile.logo = "";
+    if (!appData.profile.paymentQr) appData.profile.paymentQr = "";
     if (!appData.customSections) appData.customSections = [];
     if (!appData.faqs) appData.faqs = [];
+    if (!appData.stats) appData.stats = { views: 0, shares: 0 };
 
     function saveData() {
         Auth.saveData(userId, appData);
@@ -121,6 +123,15 @@ document.addEventListener('DOMContentLoaded', async function () {
             // Update Welcome Message
             const welcomeMsg = document.getElementById('welcome-msg');
             if (welcomeMsg) welcomeMsg.textContent = `Namaste, ${appData.profile.name}`;
+
+            // Update Stats
+            if (document.getElementById('stat-views')) document.getElementById('stat-views').textContent = appData.stats.views || 0;
+            if (document.getElementById('stat-shares')) document.getElementById('stat-shares').textContent = appData.stats.shares || 0;
+            if (document.getElementById('stat-enquiries')) document.getElementById('stat-enquiries').textContent = appData.enquiries ? appData.enquiries.length : 0;
+
+            // QR Preview
+            const qrPrev = document.getElementById('qr-preview');
+            if (qrPrev) qrPrev.src = appData.profile.paymentQr || "https://via.placeholder.com/100?text=QR";
         }
     }
 
@@ -149,6 +160,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (logoInput.files[0]) {
                 appData.profile.logo = await fileToDataUri(logoInput.files[0]);
                 document.getElementById('logo-preview').src = appData.profile.logo;
+            }
+
+            // Payment QR Upload
+            const qrInput = document.getElementById('qr-upload');
+            if (qrInput.files[0]) {
+                appData.profile.paymentQr = await fileToDataUri(qrInput.files[0]);
+                document.getElementById('qr-preview').src = appData.profile.paymentQr;
             }
 
             saveData();

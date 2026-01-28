@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - KaftyCards</title>
+    <link href="./dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rubik:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100 font-sans antialiased">
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center shadow-md">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-shield-halved text-accent-saffron text-2xl"></i>
+                <span class="text-xl font-bold font-serif">KaftyCards Admin</span>
+            </div>
+            <button id="btn-logout" class="text-gray-300 hover:text-white transition">
+                <i class="fa-solid fa-right-from-bracket mr-2"></i> Logout
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-10 max-w-7xl mx-auto w-full">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">User Management</h1>
+            <p class="text-gray-500 mb-8">View and manage all registered members.</p>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Total Users</p>
+                        <p id="total-users" class="text-3xl font-bold text-primary-blue mt-1">...</p>
+                    </div>
+                    <div
+                        class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-primary-blue text-lg">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div class="relative w-full md:w-96">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400"></i>
+                    </span>
+                    <input type="text" id="search-input"
+                        class="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:placeholder-gray-300 focus:ring-2 focus:ring-primary-blue focus:border-primary-blue sm:text-sm transition duration-150 ease-in-out shadow-sm"
+                        placeholder="Search users by name, email, or phone...">
+                </div>
+                <button id="btn-export"
+                    class="flex items-center space-x-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-blue shadow-sm transition">
+                    <i class="fa-solid fa-file-csv text-green-600"></i>
+                    <span class="font-medium">Export CSV</span>
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-500 font-bold">
+                                <th class="px-6 py-4">User Details</th>
+                                <th class="px-6 py-4">Contact Info</th>
+                                <th class="px-6 py-4">Card Status & Stats</th>
+                                <!-- <th class="px-6 py-4 text-center">Actions</th> -->
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body" class="divide-y divide-gray-100">
+                            <!-- JS Rendered Rows -->
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-400">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>
