@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const CardData = require('../models/CardData');
 
@@ -156,13 +157,28 @@ router.get('/admin/users', async (req, res) => {
 // --- DATA ROUTES ---
 
 // Get User Data (For Dashboard & Card)
+// Get User Data (For Dashboard & Card)
 router.get('/card/:uid', async (req, res) => {
     try {
-        const card = await CardData.findOne({ userId: req.params.uid });
+        let query = {};
+        if (mongoose.Types.ObjectId.isValid(req.params.uid)) {
+            query = { userId: req.params.uid };
+        } else {
+            query = { slug: req.params.uid };
+        }
+
+        const fs = require('fs');
+        // fs.appendFileSync('server_query.log', `Query: ${JSON.stringify(query)}\n`);
+        console.log(`Looking up card with query:`, query);
+
+        const card = await CardData.findOne(query);
         if (!card) return res.status(404).json({ success: false, message: 'Card not found' });
         res.json(card);
     } catch (err) {
-        res.status(500).json({ success: false, message: err.message });
+        const fs = require('fs');
+        fs.appendFileSync('server_error.log', `Error: ${err.message}\nStack: ${err.stack}\n`);
+        console.error('GET /card/:uid Error:', err);
+        res.status(500).json({ success: false, message: err.message, stack: err.stack });
     }
 });
 
@@ -171,13 +187,35 @@ router.post('/card/:uid', async (req, res) => {
     try {
         const { profile, settings, services, portfolio, gallery, testimonials, enquiries, customSections, faqs } = req.body;
 
+        // Generate Slug if missing (basic logic)
+        // Note: For existing cards without slugs, they will get one on next save.
+        let updateData = { profile, settings, services, portfolio, gallery, testimonials, enquiries, customSections, faqs };
+
+        // Find existing to check slug or generate new
+        const existingCard = await CardData.findOne({ userId: req.params.uid });
+        if (!existingCard || !existingCard.slug) {
+            if (profile && profile.name) {
+                // simple slugify: lowercase, replace spaces with hyphens, remove special chars
+                let rawSlug = profile.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                // Ensure uniqueness (simple append timestamp if needed - for now just use rawSlug or userId if empty)
+                if (!rawSlug) rawSlug = req.params.uid;
+
+                // Check if slug exists (exclude current user)
+                const slugExists = await CardData.findOne({ slug: rawSlug, userId: { $ne: req.params.uid } });
+                if (slugExists) {
+                    rawSlug = `${rawSlug}-${Date.now().toString().slice(-4)}`;
+                }
+                updateData.slug = rawSlug;
+            }
+        }
+
         const card = await CardData.findOneAndUpdate(
             { userId: req.params.uid },
-            { profile, settings, services, portfolio, gallery, testimonials, enquiries, customSections, faqs },
+            updateData,
             { new: true, upsert: true }
         );
 
-        res.json({ success: true, message: 'Saved' });
+        res.json({ success: true, message: 'Saved', slug: card.slug });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
@@ -199,6 +237,31 @@ router.post('/card/:uid/share', async (req, res) => {
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ success: false });
+    }
+});
+
+// Submit Enquiry
+router.post('/card/:uid/enquiry', async (req, res) => {
+    try {
+        let query = {};
+        if (mongoose.Types.ObjectId.isValid(req.params.uid)) {
+            query = { userId: req.params.uid };
+        } else {
+            query = { slug: req.params.uid };
+        }
+
+        const enquiry = req.body; // {name, phone, msg, date}
+
+        const card = await CardData.findOneAndUpdate(
+            query,
+            { $push: { enquiries: enquiry } },
+            { new: true }
+        );
+
+        if (!card) return res.status(404).json({ success: false, message: 'Card not found' });
+        res.json({ success: true, message: 'Enquiry sent' });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
 });
 

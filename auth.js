@@ -2,9 +2,9 @@ const Auth = {
     // --- KEY CONSTANTS ---
     // --- KEY CONSTANTS ---
     CURRENT_USER_KEY: 'kafty_current_user',
-    API_URL: (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
-        ? 'http://localhost:5000/api'
-        : '/api', // Use full URL for Live Server, relative for Prod/Node Server
+    API_URL: window.location.port === '5000'
+        ? '/api'
+        : 'http://localhost:5000/api', // Use absolute URL if on LiveServer (5500)
 
     // --- INITIALIZATION ---
     init: function () {
@@ -22,6 +22,8 @@ const Auth = {
             const data = await res.json();
             if (data.success) {
                 localStorage.setItem(this.CURRENT_USER_KEY, data.user.id);
+                localStorage.setItem('kafty_user_name', data.user.name);
+                localStorage.setItem('kafty_user_email', data.user.email);
                 return { success: true, user: data.user };
             }
             return { success: false, message: data.message };
@@ -40,6 +42,8 @@ const Auth = {
             const data = await res.json();
             if (data.success) {
                 localStorage.setItem(this.CURRENT_USER_KEY, data.user.id);
+                localStorage.setItem('kafty_user_name', data.user.name);
+                localStorage.setItem('kafty_user_email', data.user.email);
                 return { success: true, user: data.user };
             }
             return { success: false, message: data.message };

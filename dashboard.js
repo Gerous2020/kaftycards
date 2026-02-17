@@ -9,11 +9,38 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // --- Load Data ---
     let appData = await Auth.getData(userId);
-    if (!appData) {
-        alert('Failed to load data. Please relogin.');
-        Auth.logout();
-        return;
+    let isNewUser = false;
+
+    // Show User ID/Email in Sidebar
+    const emailDisplay = document.getElementById('current-user-email-display');
+    if (emailDisplay) {
+        emailDisplay.textContent = appData?.profile?.email || userId;
     }
+
+    // If no data found (new user), initialize default structure
+    if (!appData) {
+        isNewUser = true;
+        appData = {
+            profile: {
+                name: localStorage.getItem('kafty_user_name') || "",
+                industry: "Retail",
+                phone: "",
+                email: localStorage.getItem('kafty_user_email') || "",
+                address: ""
+            },
+            settings: { color: "#2C3E50", theme: "standard", secondaryColor: "#F39C12" },
+            services: [],
+            portfolio: [],
+            gallery: [],
+            testimonials: [],
+            customSections: [],
+            faqs: [],
+            stats: { views: 0, shares: 0 },
+            slug: ""
+        };
+    }
+    // Integrity Checks
+    if (!appData.slug) appData.slug = ""; // New Slug field
 
     // Integrity Checks
     if (!appData.profile.logo) appData.profile.logo = "";
@@ -22,14 +49,60 @@ document.addEventListener('DOMContentLoaded', async function () {
     if (!appData.faqs) appData.faqs = [];
     if (!appData.stats) appData.stats = { views: 0, shares: 0 };
 
-    function saveData() {
-        Auth.saveData(userId, appData);
+    async function saveData() {
+        // We need to use the response to get the slug
+        try {
+            const res = await fetch(`${Auth.API_URL}/card/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(appData)
+            });
+            const data = await res.json();
+            if (data.success && data.slug) {
+                appData.slug = data.slug;
+                updateCardLinks(); // Refresh links
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    function updateCardLinks() {
+        const identifier = appData.slug || userId;
+        document.querySelectorAll('[onclick*="card.html"]').forEach(btn => {
+            btn.setAttribute('onclick', `window.open('card.html?uid=${identifier}', '_blank')`);
+        });
+
+        // Update any specific link displays
+        const urlDisplay = document.getElementById('card-url-display');
+        if (urlDisplay) {
+            if (appData.slug) {
+                urlDisplay.textContent = `${window.location.origin}/card.html?uid=${appData.slug}`;
+                urlDisplay.href = `card.html?uid=${appData.slug}`;
+                urlDisplay.classList.remove('text-gray-400', 'italic');
+                urlDisplay.classList.add('text-blue-600');
+            } else {
+                urlDisplay.textContent = "Enter 'Business Profile' Name & Save to generate custom URL";
+                urlDisplay.href = "#";
+                urlDisplay.classList.add('text-gray-400', 'italic', 'text-xs');
+                urlDisplay.classList.remove('text-blue-600');
+            }
+        }
+    }
+
+    // Initial calls
+    updateCardLinks();
+    if (isNewUser) {
+        saveData();
     }
 
     // --- Update View Card Button Logic (Add ?uid param) ---
+    // REMOVED old logic since updateCardLinks handles it better and more dynamically
+    /* 
     document.querySelectorAll('[onclick*="card.html"]').forEach(btn => {
         btn.setAttribute('onclick', `window.open('card.html?uid=${userId}', '_blank')`);
     });
+    */
     document.getElementById('profile-preview').parentElement.parentElement.parentElement // Find Share Card button context if complex
     // Or just simple bind
 
@@ -122,7 +195,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // Update Welcome Message
             const welcomeMsg = document.getElementById('welcome-msg');
-            if (welcomeMsg) welcomeMsg.textContent = `Namaste, ${appData.profile.name}`;
+            if (welcomeMsg) {
+                const displayName = appData.profile.name || localStorage.getItem('kafty_user_name') || 'Guest';
+                welcomeMsg.textContent = `Namaste, ${displayName}`;
+            }
 
             // Update Stats
             if (document.getElementById('stat-views')) document.getElementById('stat-views').textContent = appData.stats.views || 0;

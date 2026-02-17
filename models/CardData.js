@@ -16,6 +16,7 @@ const CardDataSchema = new mongoose.Schema({
         logo: String,
         paymentQr: String // Base64 or URL
     },
+    slug: { type: String, unique: true, sparse: true },
     stats: {
         views: { type: Number, default: 0 },
         shares: { type: Number, default: 0 }

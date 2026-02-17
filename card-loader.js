@@ -17,7 +17,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     if (!data) {
-        document.body.innerHTML = '<p class="text-white text-center mt-10">Card not found.</p>';
+        console.log('Card data load failed for:', userId);
+        document.body.innerHTML = `<div class="flex flex-col items-center justify-center min-h-screen text-center p-4">
+            <p class="text-gray-800 text-xl font-bold mb-2">Card not found</p>
+            <p class="text-gray-500 text-sm">Could not load data for ID: ${userId}</p>
+            <p class="text-xs text-red-400 mt-2">Ensure the user has saved their card details.</p>
+            <a href="login.html" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg">Login to Create</a>
+        </div>`;
         return;
     }
 
@@ -147,6 +153,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                     // Fallback to WhatsApp
                     window.open(`https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`, '_blank');
                 }
+            };
+        }
+
+        // --- SAVE CONTACT LOGIC ---
+        const saveContactBtn = document.getElementById('btn-save-contact');
+        if (saveContactBtn) {
+            saveContactBtn.onclick = () => {
+                const vCard = `BEGIN:VCARD
+VERSION:3.0
+FN:${profile.name || 'Business Contact'}
+ORG:${profile.industry || 'KaftyCards User'}
+TEL;TYPE=WORK,VOICE:${profile.phone || ''}
+EMAIL:${profile.email || ''}
+URL:${window.location.href}
+ADR;TYPE=WORK:;;${(profile.address || '').replace(/\n/g, ', ')};;;;
+END:VCARD`;
+
+                const blob = new Blob([vCard], { type: 'text/vcard' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${(profile.name || 'contact').replace(/\s+/g, '_')}.vcf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             };
         }
 
@@ -289,11 +320,17 @@ document.addEventListener('DOMContentLoaded', async function () {
                     date: new Date().toLocaleDateString()
                 };
 
-                // Read fresh data, Update, Save
-                const currentData = Auth.getData(userId || 'user_1'); // Use ID from scope
-                if (!currentData.enquiries) currentData.enquiries = [];
-                currentData.enquiries.push(formData);
-                Auth.saveData(userId || 'user_1', currentData);
+                // DIRECT SUBMIT TO API
+                fetch(`${Auth.API_URL}/card/${userId}/enquiry`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) console.error('Enquiry failed', data);
+                    })
+                    .catch(err => console.error(err));
 
                 this.reset();
                 const successMsg = document.getElementById('enquiry-success');
